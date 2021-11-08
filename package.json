@@ -1,0 +1,31 @@
+{
+  "scripts": {
+    "release": "grunt --build=electron && grunt --build=native",
+    "release-electron": "grunt --build=electron",
+    "release-native": "grunt --build=native",
+    "debug": "cross_env NODE_DEV=true grunt --build=dev:native",
+    "native": "http-server build/native",
+    "clean": "rm -r build"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "howler": "^2.2.3",
+    "pino": "^7.1.0",
+    "pixi.js": "^6.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
+    "cross-env": "^7.0.3",
+    "electron": "^15.3.0",
+    "electron-packager": "^15.4.0",
+    "grunt": "^1.4.1",
+    "grunt-browserify": "^6.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-uglify": "^5.0.1",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-electron": "^12.0.0"
+  }
+}
