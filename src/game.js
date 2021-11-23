@@ -3,7 +3,7 @@ import {PIXI_APP_G, HOWL_G, PIXI_G} from "./bootstrap.js";
 
 // engine
 import AssetManager from "./assets.js";
-import G_LOGGER from "./logger.js";
+import {G_LOGGER, getLevel, setLevel} from "./logger.js";
 import {SCENES, BUILD_ASSET_FOLDER, ASSETS} from "./constants.js";
 
 // STD
@@ -14,7 +14,7 @@ class Game {
         this.scenes = SCENES;
         this.app = PIXI_APP_G
         this.rootNode = PIXI_APP_G.stage
-        G_LOGGER.info(HOWL_G);
+        G_LOGGER.debug(HOWL_G);
         this.howler = HOWL_G;
         this.pixi = PIXI_G;
         this.assetManager = new AssetManager(

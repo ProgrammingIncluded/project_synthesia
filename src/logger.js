@@ -1,3 +1,21 @@
-const LOGGER_G = require("pino")({browser: {asObject: true}});
+let pino =  require("pino")
+let G_LOGGER = pino({browser: {asObject: true}});
 
-module.exports = LOGGER_G;
+const LOGGER_LEVEL_DEBUG = "debug";
+const LOGGER_LEVEL_PROD = "info";
+
+function setLevel(level) {
+    G_LOGGER.level = level;
+}
+
+function getLevel() {
+    return G_LOGGER.level;
+}
+
+export {
+    G_LOGGER,
+    setLevel,
+    getLevel,
+    LOGGER_LEVEL_DEBUG,
+    LOGGER_LEVEL_PROD
+}

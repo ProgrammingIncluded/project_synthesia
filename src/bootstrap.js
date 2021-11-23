@@ -1,7 +1,7 @@
 // Load core modules
-import {Howl as HOWL_G} from "howler";
+import { Howl as HOWL_G } from "howler";
 import * as PIXI_G from "pixi.js";
-import LOGGER_G from "./logger.js";
+import { G_LOGGER } from "./logger.js";
 
 // Load application window
 // Create the application helper and add its render target to the page
@@ -11,7 +11,7 @@ document.body.appendChild(PIXI_APP_G.view);
 
 export {
     HOWL_G,
-    LOGGER_G,
+    G_LOGGER,
     PIXI_APP_G,
     PIXI_G
 }

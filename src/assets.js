@@ -1,8 +1,8 @@
 // Very basic asset manager interface.
 // engine
-import {PIXI_G} from "./bootstrap.js";
+import { PIXI_G } from "./bootstrap.js";
 import { BUILD_ASSET_FOLDER, ASSETS } from "./constants.js";
-const LOGGER_G = require("./logger.js");
+const { G_LOGGER } = require("./logger.js");
 
 // std
 const path = require("path");
@@ -18,7 +18,7 @@ class PixiJSAssetManager {
 
     getAssetFile(assetName) {
         if (!(assetName in this.assetMap)) {
-            LOGGER_G.warning(`"Unable to load ${assetName}, using default image.`)
+            G_LOGGER.warning(`"Unable to load ${assetName}, using default image.`)
             return this.assetMap["missing"];
         }
 

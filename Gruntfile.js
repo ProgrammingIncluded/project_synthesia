@@ -1,12 +1,14 @@
 module.exports = function (grunt) {
     jsOutputName = "bundle.js";
     buildFullName = grunt.option("build");
-    buildPlatform = buildFullName.split(":").at(-1)
+    buildPlatform = buildFullName.split(":").at(-1);
+    buildIsDev = buildFullName.includes("dev");
+    buildVariant = buildIsDev ? "dev" : "prod";
     bundleLocation = `build/${buildPlatform}/${jsOutputName}`;
     electronVersion = "1.3.5";
 
     browserifyOptionDict = {
-        debug: buildFullName.includes("dev") ? true : false,
+        debug: buildIsDev ? true : false,
     };
 
     copyFiles = [];
@@ -28,14 +30,14 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
         browserify: {
-            development: {
-                src: `main-native.js`,
+            build: {
+                src: `main-native${buildIsDev ? "-dev" : ""}.js`,
                 dest: bundleLocation,
                 options: {
                     browserifyOptions: browserifyOptionDict,
                     transform: [["babelify", { "presets": ["@babel/preset-env"] }]],
                 }
-            },
+            }
         },
         uglify: {
             options: {
