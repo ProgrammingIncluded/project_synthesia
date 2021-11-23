@@ -3,12 +3,13 @@
     "release": "grunt --build=electron && grunt --build=native",
     "release-electron": "grunt --build=electron",
     "release-native": "grunt --build=native",
-    "debug": "cross_env NODE_DEV=true grunt --build=dev:native",
+    "debug": "cross-env NODE_DEV=true grunt --build=dev:native",
     "native": "http-server build/native",
     "clean": "rm -r build"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
+    "esprima": "^4.0.1",
     "howler": "^2.2.3",
     "pino": "^7.1.0",
     "pixi.js": "^6.2.0"
