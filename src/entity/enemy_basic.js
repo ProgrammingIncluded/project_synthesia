@@ -1,30 +1,31 @@
-let SPRITE = "missing";
+import { Entity } from "./entity.js";
+import { enemyBlueprint } from "./blueprints.js";
 
+class EnemyBasic extends Entity  {
+    constructor() {
+        super(enemyBlueprint);
+        this.elapsed = 0;
+    }
 
-let CONSTRAINT = ``
+    attack(delta, curPos, player, enemies, space) {
+        return 0;
+    }
 
-let MOVEMENT = `
-(delta, curPos, player, enemies, space) => {
-    return curPos + 1;
+    movement(elapsed, curPos, player, enemies, space) {
+        return [100.0 + Math.cos(elapsed/50.0) * 100.0, curPos[1]];
+    }
+
+    render(elapsed, sprite) {
+        return sprite;
+    }
+
+    // Engine level API
+    update(delta) {
+        this.elapsed += delta;
+        let posBuf = [this.sprite.position.x, this.sprite.position.y];
+        posBuf = this.movement(this.elapsed, posBuf, undefined, undefined, undefined);
+        this.sprite.position.set(posBuf[0], posBuf[1]);
+    }
 }
-`;
 
-let RENDER = `
-(delta, sprite) => {
-    return sprite;
-}
-`;
-
-let ATTACK = `
-(delta, curPos, player, enemies, space) => {
-    return 0;
-}
-`;
-
-export {
-    SPRITE,
-    CONSTRAINT,
-    MOVEMENT,
-    RENDER,
-    ATTACK
-}
+module.exports = EnemyBasic;

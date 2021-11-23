@@ -12,10 +12,19 @@ function getLevel() {
     return G_LOGGER.level;
 }
 
+// Helper function
+function assert(conditional, errMsg) {
+    if (!conditional) {
+        G_LOGGER.error(errMsg);
+        throw errMsg;
+    }
+}
+
 export {
     G_LOGGER,
     setLevel,
     getLevel,
     LOGGER_LEVEL_DEBUG,
-    LOGGER_LEVEL_PROD
+    LOGGER_LEVEL_PROD,
+    assert
 }
