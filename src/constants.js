@@ -7,6 +7,11 @@ const SCENES = {
     "title": require("./scene/title.js"),
     "sandbox": require("./scene/sandbox.js")
 }
+
+const ENTITIES = {
+    "enemy_basic": require("./entity/enemy_basic.js")
+}
+
 const ASSETS = {
     "missing": "sample.jpg"
 }
@@ -15,5 +20,6 @@ export {
     DEV_MODE,
     BUILD_ASSET_FOLDER,
     SCENES,
+    ENTITIES,
     ASSETS
 }

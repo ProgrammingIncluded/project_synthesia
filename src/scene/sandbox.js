@@ -1,8 +1,12 @@
 import Scene from "./scene.js";
+import { EntityLoader } from "../entity/entity.js";
 import G_LOGGER from "../logger.js";
+
 
 class TitleScene extends Scene {
     async load() {
+        this.eLoader = new EntityLoader(this.assets);
+        this.eLoader.load("enemy_basic");
         this.sprite = this.assets.loadSprite("missing");
         this.rootNode.addChild(this.sprite);
         this.elapsed = 0.0;
