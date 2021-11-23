@@ -1,14 +1,16 @@
 module.exports = function (grunt) {
     jsOutputName = "bundle.js";
-    bundleLocation = `build/${grunt.option("build")}/${jsOutputName}`;
+    buildFullName = grunt.option("build");
+    buildPlatform = buildFullName.split(":").at(-1)
+    bundleLocation = `build/${buildPlatform}/${jsOutputName}`;
     electronVersion = "1.3.5";
 
     browserifyOptionDict = {
-        debug: grunt.option("build").includes("dev") ? true : false,
+        debug: buildFullName.includes("dev") ? true : false,
     };
 
     copyFiles = [];
-    if (grunt.option("build").includes("electron")) {
+    if (buildFullName.includes("electron")) {
         copyFiles = [
                     {src: ["package.json"], dest: "build/electron/package.json"},
                     {src: ["main-electron.js"], dest: "build/electron/index.js"},
@@ -62,7 +64,7 @@ module.exports = function (grunt) {
             }
         },
         watch: {
-            files: ["src/**/*.js", `main-${grunt.option("build")}.js`],
+            files: ["src/**/*.js", `main-${buildPlatform}.js`],
             tasks: ["browserify"]
         },
     });
@@ -73,14 +75,14 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     let defaultTask = ["browserify", "copy"];
-    if(!grunt.option("build").includes("dev")) {
+    if(!buildFullName.includes("dev")) {
         defaultTask.push("uglify");
     }
     else {
         defaultTask.push("watch")
     }
 
-    if(grunt.option("build").includes("electron")) {
+    if(buildFullName.includes("electron")) {
         defaultTask.push("electron");
     }
 
