@@ -1,9 +1,5 @@
 import Scene from "./scene.js";
-import { EntityLoader } from "../entity/entity.js";
 import G_LOGGER from "../logger.js";
-
-// Pixi
-import { ObservablePoint } from "@pixi/math";
 
 
 class SandboxScene extends Scene {
