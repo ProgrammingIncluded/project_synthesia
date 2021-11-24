@@ -11,16 +11,21 @@ class Entity {
     constructor(blueprint) {
         // Metadata
         this.blueprint = blueprint;
-        this.states = {...blueprint.defaultStates};
+        this.preStates = {...blueprint.preStates};
         this.name = "DNE";
         this.spriteName = "missing";
 
         // Engine level objects
         this.sprite = undefined;
+        this.functions = [];
     }
 
 
     // Engine level API
+    load() {
+
+    }
+
     update(delta) {
 
     }
@@ -34,7 +39,8 @@ class Entity {
     }
 }
 
-class EntityLoader {
+
+class EntityManager {
     constructor(assetManager) {
         this.assetManager = assetManager;
         this.sourceCode = {};
@@ -46,6 +52,7 @@ class EntityLoader {
 
     mutate(entity) {
         let pt = esprima.parse(entity.movement.toString());
+        G_LOGGER.debug(pt);
         assert(pt.type == "Program", "Loading invalid program");
     }
 
@@ -60,6 +67,7 @@ class EntityLoader {
         // Load the sprite into the engine and store the ptr
         entity.sprite = this.assetManager.loadSprite(entity.spriteName);
         node.addChild(entity.sprite);
+        entity.load();
         return entity;
     }
 }
@@ -75,5 +83,5 @@ class EntityLoader {
 
 export {
     Entity,
-    EntityLoader
+    EntityManager
 }

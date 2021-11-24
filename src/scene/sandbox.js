@@ -8,6 +8,12 @@ class SandboxScene extends Scene {
             this.eLoader.load("enemy_basic", this.rootNode)
         ]
 
+        for (let es of this.enemySprites) {
+            es.sprite.on("pointerdown", (event) => {
+                this.eLoader.mutate(es);
+            })
+        }
+
         this.bgm = new this.howl({
             src: ["assets/audio/peace_1.mp3"],
             loop: true
