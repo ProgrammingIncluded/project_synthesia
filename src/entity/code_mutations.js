@@ -1,8 +1,8 @@
 // Encodes mutations for code
 // Encode the state modifiers
-
 class Mutation {
     check(node, state) {
+
     }
 
     mutate(node, state) {
@@ -11,11 +11,15 @@ class Mutation {
 }
 
 // Adds a value to a random variable
-class BasicVariableAddMutation {
-    stateTransform(state) {
-        let newRandomState = {};
+// Inject for: a + C where C is some random constant.
+class BasicVariableAddMutation extends Mutation {
+    check(node, state) {
+        variables = Object.keys(state);
+        return (variables.length != 0);
+    }
 
-        return {...state, ...{}};
+    mutate(node, state) {
+
     }
 }
 

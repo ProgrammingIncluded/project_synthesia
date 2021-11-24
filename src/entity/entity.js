@@ -20,6 +20,9 @@ class Entity {
         this.functions = [];
     }
 
+    enforce(expr) {
+        assert(expr);
+    }
 
     // Engine level API
     load() {
@@ -52,8 +55,62 @@ class EntityManager {
 
     mutate(entity) {
         let pt = esprima.parse(entity.movement.toString());
-        G_LOGGER.debug(pt);
         assert(pt.type == "Program", "Loading invalid program");
+
+
+        // Traverse through the program tree while applying all available mutations
+        // Generate verifications overtime
+        let stack = [pt];
+
+        // Helper for pushing to stack
+        let addChildren = (children) => {
+            stack.push(...children.reverse());
+        }
+
+        // variable bindings
+        let state = {};
+        while(stack.length != 0) {
+            let node = stack.pop();
+            if (node === undefined) { continue; }
+
+            G_LOGGER.log(node.type);
+
+            // Add to the stack
+            if (["Program", "BlockStatement"].includes(node.type)) {
+                addChildren(node.body);
+            }
+            else if (node.type == "FunctionDeclaration") {
+                addChildren((node.params.concat([node.body])));
+            }
+            else if (node.type == "VariableDeclaration") {
+                addChildren(node.declarations);
+            }
+            else if (node.type == "VariableDeclarator") {
+                addChildren([node.id, node.init]);
+            }
+            else if (node.type == "ExpressionStatement") {
+                stack.push(node.expression);
+            }
+            else if (node.type == "BinaryExpression") {
+                addChildren([node.left, node.right]);
+            }
+            else if (node.type == "CallExpression") {
+                addChildren(([node.callee].concat(node.arguments)));
+            }
+            else if (node.type == "SequenceExpression") {
+                addChildren(node.expressions);
+            }
+            else if (node.type == "ReturnStatement") {
+                stack.push(node.argument)
+            }
+            else if (node.type == "ArrayExpression") {
+                addChildren(node.elements);
+            }
+            else if (node.type == "Identifier") {
+                G_LOGGER.log("Hit identifier " + node.name);
+            }
+            G_LOGGER.log(node);
+        }
     }
 
     load(entityName, node, startingPosition, scale=1) {

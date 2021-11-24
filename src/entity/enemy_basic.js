@@ -1,6 +1,5 @@
 import { Entity } from "./entity.js";
 import { enemyBlueprint } from "./blueprints.js";
-import assert from "assert";
 import { G_LOGGER } from "../logger.js";
 
 class EnemyBasic extends Entity  {
@@ -20,7 +19,7 @@ class EnemyBasic extends Entity  {
         // [100.0 + Math.cos(elapsed/50.0) * 100.0, curPos[1]];
         let resultX = curPosX + 1.0;
         // INSERT
-        assert((resultX - curPosX) <= this.preStates.movement.maxVelocity);
+        this.enforce((resultX - curPosX) <= this.preStates.movement.maxVelocity);
         return [resultX, curPosY];
     }
 
