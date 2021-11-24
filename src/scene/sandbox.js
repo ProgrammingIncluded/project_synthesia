@@ -19,7 +19,7 @@ class SandboxScene extends Scene {
             src: ["assets/audio/peace_1.mp3"],
             loop: true
         });
-        this.bgm.play();
+        //this.bgm.play();
 
         return this;
     }

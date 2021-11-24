@@ -2,9 +2,18 @@ import { Entity } from "./entity.js";
 import { playerBlueprint } from "./blueprints.js";
 
 class Player extends Entity  {
+
+
     constructor() {
         super(playerBlueprint);
         this.elapsed = 0;
+        this.spriteName = "player";
+        this.maxSpeed = 5;
+        this.accel = 1;
+        this.vx = 0, this.vy = 0;
+        this.shooting = false;
+        window.addEventListener('keydown', this.onKeyPress);
+        window.addEventListener('keyup', this.onKeyUp);
     }
 
     attack(delta, curPos, player, enemies, space) {
@@ -25,6 +34,44 @@ class Player extends Entity  {
         let posBuf = [this.sprite.position.x, this.sprite.position.y];
         posBuf = this.movement(this.elapsed, posBuf, undefined, undefined, undefined);
         this.sprite.position.set(posBuf[0], posBuf[1]);
+    }
+
+    teardown() {
+        window.removeEventListener('keydown', onKeyPress);
+        window.removeEventListener('keyup', onKeyUp);
+        super.teardown();
+    }
+
+    onKeyPress(e) {
+        let key = e.code;
+        switch(key){
+            case "KeyW":
+                console.log("Up");
+                break;
+            case "KeyS":
+                console.log("Down");
+                break;
+            case "KeyA":
+                console.log("Left");
+                break;
+            case "KeyD":
+                console.log("Right");
+                break;
+            case "Space":
+                console.log("peko peko peko");
+                this.shooting = true;
+                break;
+        }
+    }
+
+    onKeyUp(e) {
+        let key = e.code;
+        switch(key){
+            case "Space":
+                this.shooting = false;
+                console.log("Matte peko");
+                break;
+        }
     }
 }
 

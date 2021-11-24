@@ -14,7 +14,8 @@ const ENTITIES = {
 }
 
 const ASSETS = {
-    "missing": "sample.jpg"
+    "missing": "sample.jpg",
+    "player": "temp_player.png"
 }
 
 export {
