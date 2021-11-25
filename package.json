@@ -12,7 +12,6 @@
     "escodegen": "^2.0.0",
     "esprima": "^4.0.1",
     "howler": "^2.2.3",
-    "http-server": "^14.0.0",
     "pino": "^7.1.0",
     "pixi.js": "^6.2.0"
   },
@@ -29,6 +28,7 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-uglify": "^5.0.1",
     "grunt-contrib-watch": "^1.1.0",
-    "grunt-electron": "^12.0.0"
+    "grunt-electron": "^12.0.0",
+    "http-server": "^14.0.0"
   }
 }
