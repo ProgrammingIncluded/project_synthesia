@@ -165,6 +165,7 @@ class EntityManager {
             validLocations[m.constructor.name] = [];
         }
         let mutation = undefined;
+        G_LOGGER.info("Still working");
 
         this.iterateGraph(pt, entity.preStates, (idx, node, accum) => {
             for (const m of MUTATIONS) {
@@ -178,7 +179,7 @@ class EntityManager {
         });
 
         if (mutation === undefined) {
-            assert(mutation === undefined, "Code cannot be mutated, too powerful.")
+            assert(mutation === undefined, "Code cannot be mutated, too powerful.");
         }
 
         let mutated = false;
@@ -186,15 +187,15 @@ class EntityManager {
         let randomValidLocation = validLocations[Math.floor(Math.random() * validLocations.length)];
         let mutationRet = this.iterateGraph(pt, entity.preStates, (idx, node, accum) => {
             if (mutated || idx != randomValidLocation) {
-                return {"node": node, "accum": accum}
+                return {"node": node, "accum": accum};
             }
             let ret = mutation.mutate(node, accum);
             mutated = true;
             return {"node": ret.node, "accum": ret.state};
-        })
+        });
 
-        let newCode = escodegen.generate(mutationRet.node);
-        G_LOGGER.debug(newCode);
+        let newCode = escodegen.generate(mutationRet.node) + ";";
+        G_LOGGER.info(newCode);
         entity.movement = eval(newCode);
 
         // TODO: Verification
