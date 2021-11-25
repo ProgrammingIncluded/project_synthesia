@@ -14,10 +14,10 @@ class EnemyBasic extends Entity  {
         return 0;
     }
 
-    movement(elapsed, curPosX, curPosY, player, enemies, space) {
+    movement(elapsed, pos, player, enemies, space) {
         let resultX = 100.0 + Math.cos(elapsed/50.0) * 100.0;
         // this.enforce((resultX - curPosX) <= this.preStates.movement.maxVelocity);
-        return [resultX, curPosY + 0];
+        return new this.helpers.Pixi.Point(resultX, pos.y + 0);
     }
 
     render(elapsed, sprite) {
@@ -32,9 +32,11 @@ class EnemyBasic extends Entity  {
     }
 
     update(elapsed) {
-        let posBuf = this.movement(elapsed, this.sprite.x, this.sprite.y, undefined, undefined, undefined);
-        this.sprite.position.set(posBuf[0], posBuf[1]);
+        let posBuf = this.movement(elapsed, this.sprite.position, undefined, undefined, undefined);
+        this.sprite.position.set(posBuf.x, posBuf.y);
     }
 }
 
 module.exports = EnemyBasic;
+
+

@@ -1,3 +1,4 @@
+import * as G_PIXI from "pixi.js";
 import * as esprima from "esprima";
 import * as escodegen from "escodegen";
 
@@ -21,6 +22,11 @@ class Entity {
         this.functions = [];
         // Should not be modified directly
         this.node = undefined;
+
+        // Helper functions
+        this.helpers = {
+            "Pixi": G_PIXI
+        }
     }
 
     setNode(node) {
@@ -75,7 +81,7 @@ class EntityManager {
         if (["Program", "BlockStatement"].includes(node.type)) {
             this.addArrayToStack(stack, node.body);
         }
-        else if (["FunctionDeclaration", "ArrowFunctionExpression"].includes(node.type)) {
+        else if (["FunctionDeclaration", "FunctionExpression", "ArrowFunctionExpression"].includes(node.type)) {
             this.addArrayToStack(stack, (node.params.concat([node.body])));
         }
         else if (node.type == "VariableDeclaration") {
@@ -194,9 +200,17 @@ class EntityManager {
             return {"node": ret.node, "accum": ret.state};
         });
 
-        let newCode = escodegen.generate(mutationRet.node) + ";";
+        let newCode = escodegen.generate(mutationRet.node);
         G_LOGGER.info(newCode);
-        entity.movement = eval(newCode);
+
+
+        // HACK to provide a context for the function
+        let context = function() {
+            return eval(newCode);
+        }.bind(entity);
+
+        // Required to bind context
+        entity.movement = context();
 
         // TODO: Verification
     }
