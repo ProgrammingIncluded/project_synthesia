@@ -1,6 +1,6 @@
 // Very basic asset manager interface.
 // engine
-import { PIXI_G } from "./bootstrap.js";
+import { G_PIXI } from "./bootstrap.js";
 import { BUILD_ASSET_FOLDER, ASSETS } from "./constants.js";
 const { G_LOGGER } = require("./logger.js");
 
@@ -8,7 +8,7 @@ const { G_LOGGER } = require("./logger.js");
 const path = require("path");
 
 class PixiJSAssetManager {
-    constructor(pixijs = PIXI_G,
+    constructor(pixijs = G_PIXI,
                 assetFolder = BUILD_ASSET_FOLDER,
                 assetMap = ASSETS) {
         this.pixijs = pixijs;

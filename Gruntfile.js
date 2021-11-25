@@ -41,7 +41,8 @@ module.exports = function (grunt) {
         },
         uglify: {
             options: {
-                banner: "// Copyright ProgrammingIncluded"
+                banner: "// Copyright ProgrammingIncluded",
+                compress: false
             },
             dist: {
                 files: JSON.parse(`{"${bundleLocation}":"${bundleLocation}"}`)
@@ -71,7 +72,7 @@ module.exports = function (grunt) {
         },
     });
     grunt.loadNpmTasks('grunt-browserify');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-uglify-es');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-electron');
     grunt.loadNpmTasks('grunt-contrib-watch');

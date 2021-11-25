@@ -1,18 +1,23 @@
 import { Entity } from "./entity.js";
 import { enemyBlueprint } from "./blueprints.js";
+import { G_LOGGER } from "../logger.js";
 
 class EnemyBasic extends Entity  {
     constructor() {
         super(enemyBlueprint);
-        this.elapsed = 0;
+
+        // set maxvelocity to 10
+        this.preStates["movement"]["maxVelocity"] = 10.0;
     }
 
-    attack(delta, curPos, player, enemies, space) {
+    attack(delta, curPosX, curPosY, player, enemies, space) {
         return 0;
     }
 
-    movement(elapsed, curPos, player, enemies, space) {
-        return [100.0 + Math.cos(elapsed/50.0) * 100.0, curPos[1]];
+    movement(elapsed, pos, player, enemies, space) {
+        let resultX = 100.0 + Math.cos(elapsed/50.0) * 100.0;
+        // this.enforce((resultX - curPosX) <= this.preStates.movement.maxVelocity);
+        return new this.helpers.Pixi.Point(resultX, pos.y + 0);
     }
 
     render(elapsed, sprite) {
@@ -20,12 +25,18 @@ class EnemyBasic extends Entity  {
     }
 
     // Engine level API
-    update(delta) {
-        this.elapsed += delta;
-        let posBuf = [this.sprite.position.x, this.sprite.position.y];
-        posBuf = this.movement(this.elapsed, posBuf, undefined, undefined, undefined);
-        this.sprite.position.set(posBuf[0], posBuf[1]);
+    load() {
+        // set some interactive properties
+        this.sprite.interactive = true;
+        this.sprite.buttonMode = true;
+    }
+
+    update(elapsed) {
+        let posBuf = this.movement(elapsed, this.sprite.position, undefined, undefined, undefined);
+        this.sprite.position.set(posBuf.x, posBuf.y);
     }
 }
 
 module.exports = EnemyBasic;
+
+

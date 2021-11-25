@@ -1,5 +1,5 @@
 // Bootstrap should execute before game imports
-import {PIXI_APP_G, HOWL_G, PIXI_G} from "./bootstrap.js";
+import {G_PIXI_APP, G_HOWL, G_PIXI} from "./bootstrap.js";
 
 // engine
 import AssetManager from "./assets.js";
@@ -12,11 +12,11 @@ const path = require("path");
 class Game {
     constructor() {
         this.scenes = SCENES;
-        this.app = PIXI_APP_G
-        this.rootNode = PIXI_APP_G.stage
-        G_LOGGER.debug(HOWL_G);
-        this.howler = HOWL_G;
-        this.pixi = PIXI_G;
+        this.app = G_PIXI_APP
+        this.rootNode = G_PIXI_APP.stage
+        G_LOGGER.debug(G_HOWL);
+        this.howler = G_HOWL;
+        this.pixi = G_PIXI;
         this.assetManager = new AssetManager(
             this.pixi,
             BUILD_ASSET_FOLDER,

@@ -1,4 +1,4 @@
-import { EntityLoader } from "../entity/entity.js";
+import { EntityManager } from "../entity/entity.js";
 
 class Scene {
     constructor(
@@ -11,7 +11,7 @@ class Scene {
         this.pixi = pixi;
         this.howl = howl;
         this.assets = assets;
-        this.eLoader = new EntityLoader(assets);
+        this.eLoader = new EntityManager(assets);
 
         // Check to see if teardown await is required before next loading of scene
         this.teardownAwait = false;
