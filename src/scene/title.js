@@ -1,5 +1,5 @@
 import Scene from "./scene.js";
-import G_LOGGER from "../logger.js";
+import { G_LOGGER } from "../logger.js";
 
 class TitleScene extends Scene {
     async load() {

@@ -7,12 +7,12 @@ class Blueprint {
     constructor() {
         this.name = "unamed_blueprint";
         this.constraints = {};
-        this.defaultStates = {};
+        this.preStates = {};
     }
 
     add(other) {
         this.constraints = {...this.constraints, ...other.constraints};
-        this.defaultStates = {...this.defaultStates, ...other.states};
+        this.preStates = {...this.preStates, ...other.preStates};
     }
 
     addConstraint(functionName, constraint) {
@@ -20,34 +20,36 @@ class Blueprint {
     }
 
     getState(functionName) {
-        return this.defaultStates[functionName];
+        return this.preStates[functionName];
     }
 }
 
 class RenderBlueprint extends Blueprint {
     constructor() {
         super();
-        this.name = "render_blueprint";
+        this.name = "render";
         this.constraints["render"] = [];
-        this.defaultStates["render"] = "";
+        this.preStates["render"] = {};
     }
 }
 
 class MovementBlueprint extends Blueprint {
     constructor() {
         super();
-        this.name = "movement_blueprint";
+        this.name = "movement";
         this.constraints["movement"] = [];
-        this.defaultStates["movement"] = "";
+        this.preStates["movement"] = {
+            "maxVelocity": 1.0
+        };
     }
 }
 
 class AttackBlueprint extends Blueprint {
     constructor() {
         super();
-        this.name = "attack_blueprint";
+        this.name = "attack";
         this.constraints["attack"] = [];
-        this.defaultStates["attack"] = "";
+        this.preStates["attack"] = {};
     }
 }
 
