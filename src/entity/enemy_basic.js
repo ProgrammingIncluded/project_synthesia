@@ -5,7 +5,6 @@ import { G_LOGGER } from "../logger.js";
 class EnemyBasic extends Entity  {
     constructor() {
         super(enemyBlueprint);
-        this.elapsed = 0;
 
         // set maxvelocity to 10
         this.preStates["movement"]["maxVelocity"] = 10.0;
@@ -16,11 +15,9 @@ class EnemyBasic extends Entity  {
     }
 
     movement(elapsed, curPosX, curPosY, player, enemies, space) {
-        // [100.0 + Math.cos(elapsed/50.0) * 100.0, curPos[1]];
-        let resultX = curPosX + 1.0;
-        // INSERT
-        this.enforce((resultX - curPosX) <= this.preStates.movement.maxVelocity);
-        return [resultX, curPosY];
+        let resultX = 100.0 + Math.cos(elapsed/50.0) * 100.0;
+        // this.enforce((resultX - curPosX) <= this.preStates.movement.maxVelocity);
+        return [resultX, curPosY + 0];
     }
 
     render(elapsed, sprite) {
@@ -34,9 +31,8 @@ class EnemyBasic extends Entity  {
         this.sprite.buttonMode = true;
     }
 
-    update(delta) {
-        this.elapsed += delta;
-        let posBuf = this.movement(this.elapsed, this.sprite.x, this.sprite.y, undefined, undefined, undefined);
+    update(elapsed) {
+        let posBuf = this.movement(elapsed, this.sprite.x, this.sprite.y, undefined, undefined, undefined);
         this.sprite.position.set(posBuf[0], posBuf[1]);
     }
 }

@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
+    "escodegen": "^2.0.0",
     "esprima": "^4.0.1",
     "howler": "^2.2.3",
+    "http-server": "^14.0.0",
     "pino": "^7.1.0",
     "pixi.js": "^6.2.0"
   },
