@@ -21,9 +21,8 @@ class Player extends Entity  {
     }
 
     movement(elapsed, curPos, player, enemies, space) {
-        let newX = Math.max(0, Math.min(G_PIXI_APP.screen.width - this.sprite.width, curPos[0] + this.maxSpeed * this.dirX));
-        let newY = Math.max(0, Math.min(G_PIXI_APP.screen.height - this.sprite.height, curPos[1] + this.maxSpeed * this.dirY));
-        // this.sprite.angle = elapsed;
+        let newX = Math.max(this.sprite.width/2, Math.min(G_PIXI_APP.screen.width - this.sprite.width / 2, curPos[0] + this.maxSpeed * this.dirX));
+        let newY = Math.max(this.sprite.height/2, Math.min(G_PIXI_APP.screen.height - this.sprite.height / 2, curPos[1] + this.maxSpeed * this.dirY));
         return new this.helpers.Pixi.Point(newX, newY);
     }
 
@@ -47,8 +46,6 @@ class Player extends Entity  {
         window.removeEventListener('keyup', this.onKeyUp);
         super.teardown();
     }
-
-
 
     onKeyPress(e) {
         let key = e.code;
