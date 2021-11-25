@@ -57,6 +57,28 @@ class Entity {
     pause() {
 
     }
+
+    // Rotate current sprite towards given coordinates
+    // Returns: the angle in radians
+    lookTowards(target) {
+        assert(target.type === G_PIXI.IPoint, "Target of lookTowards must be a PIXI IPoint object.");
+        assert(target.x !== null && target.y !== null, "lookTowards target x or y was null.");
+        let x1 = this.sprite.position.x;
+        let y1 = this.sprite.position.y;
+        let op = target.y - y1;
+        let ad = target.x - x1;
+        let sigma = Math.atan(op/ad); // angle between mouse pointer and horizontal
+        // assume the sprite is the origin for a moment. There are different
+        // behaviors based on what quadrant the mouse pointer is in relative to
+        // the sprite. There are also boundary conditions to handle because
+        // tangent isn't defined at +/- pi/2.
+        // positive value means mouse right of cursor
+        let leftRight = Math.sign(ad);
+        let theta = sigma === NaN || leftRight === 0 ? this.sprite.rotation : leftRight * Math.PI/2 + sigma;
+        // rotation is the radian property; angle is the degree on.
+        // per Pixi docs, they do the same thing
+        this.sprite.rotation = theta;
+    }
 }
 
 
@@ -225,6 +247,7 @@ class EntityManager {
 
         // Load the sprite into the engine and store the ptr
         entity.sprite = this.assetManager.loadSprite(entity.spriteName);
+        entity.sprite.anchor.set(0.5); // Can't be called in entity constructor because sprite isn't loaded yet
         node.addChild(entity.sprite);
         entity.setNode(node);
         entity.load();

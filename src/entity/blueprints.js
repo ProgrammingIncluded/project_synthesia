@@ -56,9 +56,9 @@ class AttackBlueprint extends Blueprint {
 class HackingBlueprint extends Blueprint {
     constructor() {
         super();
-        this.name = "hacking_blueprint";
+        this.name = "hacking";
         this.constraints["hacking"] = [];
-        this.defaultStates["hacking"] = "";
+        this.preStates["hacking"] = "";
     }
 }
 
