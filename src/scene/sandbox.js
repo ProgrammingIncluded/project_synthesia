@@ -28,8 +28,8 @@ class SandboxScene extends Scene {
         for (const es of this.enemySprites) {
             es.update(delta);
         }
-        for (const es of this.playerSprites) {
-            es.update(delta);
+        for (const ps of this.playerSprites) {
+            ps.update(delta);
         }
     }
 
@@ -37,8 +37,8 @@ class SandboxScene extends Scene {
         for (const es of this.enemySprites) {
             es.teardown();
         }
-        for (const es of this.playerSprites) {
-            es.teardown();
+        for (const ps of this.playerSprites) {
+            ps.teardown();
         }
     }
 

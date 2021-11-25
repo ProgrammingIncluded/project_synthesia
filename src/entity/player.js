@@ -1,5 +1,6 @@
 import { Entity } from "./entity.js";
 import { playerBlueprint } from "./blueprints.js";
+import { PIXI_APP_G } from "../bootstrap.js";
 
 class Player extends Entity  {
 
@@ -22,7 +23,9 @@ class Player extends Entity  {
     }
 
     movement(elapsed, curPos, player, enemies, space) {
-        return [curPos[0] + this.maxSpeed * this.dirX, curPos[1] + this.maxSpeed * this.dirY];
+        let newX = Math.max(0, Math.min(PIXI_APP_G.screen.width - this.sprite.width, curPos[0] + this.maxSpeed * this.dirX));
+        let newY = Math.max(0, Math.min(PIXI_APP_G.screen.height - this.sprite.height, curPos[1] + this.maxSpeed * this.dirY));
+        return [newX, newY];
     }
 
     render(elapsed, sprite) {
