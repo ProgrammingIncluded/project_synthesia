@@ -32,10 +32,7 @@ class BasicConstOpMutation extends Mutation {
     }
 
     check(node, state) {
-        if (this.allowed.includes(node.type)) {
-            return true;
-        }
-        return false;
+        return this.allowed.includes(node.type);
     }
 
     mutate(node, state) {
