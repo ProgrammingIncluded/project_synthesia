@@ -29,11 +29,18 @@ class SandboxScene extends Scene {
         this.generateEnemies(1);
         this.elapsed = 0.0;
 
+        // TODO:
+        // 1. Add player sprite
+        // 2. Add alternate sprites (e.g. taking damage)
+        this.playerSprites = [
+          this.eLoader.load("player", this.rootNode)
+        ]
+
         this.bgm = new this.howl({
             src: ["assets/audio/peace_1.mp3"],
             loop: true
         });
-        this.bgm.play();
+        //this.bgm.play();
 
         return this;
     }
@@ -49,11 +56,17 @@ class SandboxScene extends Scene {
             G_LOGGER.debug("Resetting orb.")
             this.elapsed = 0;
         }
+        for (const ps of this.playerSprites) {
+            ps.update(delta);
+        }
     }
 
     async teardown() {
         for (const es of this.enemySprites) {
             es.teardown();
+        }
+        for (const ps of this.playerSprites) {
+            ps.teardown();
         }
     }
 

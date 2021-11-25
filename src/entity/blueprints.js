@@ -53,6 +53,15 @@ class AttackBlueprint extends Blueprint {
     }
 }
 
+class HackingBlueprint extends Blueprint {
+    constructor() {
+        super();
+        this.name = "hacking";
+        this.constraints["hacking"] = [];
+        this.preStates["hacking"] = "";
+    }
+}
+
 function blueFactory(blueprints) {
     if (blueprints.length == 0) {
         G_LOGGER.error("no blue prints specified for factory");
@@ -76,6 +85,14 @@ let enemyBlueprint = blueFactory([
                                   RenderBlueprint
                                 ]);
 
+let playerBlueprint = blueFactory([
+                                  AttackBlueprint,
+                                  MovementBlueprint,
+                                  RenderBlueprint,
+                                  HackingBlueprint
+                                ]);
+
 export {
-    enemyBlueprint
+    enemyBlueprint,
+    playerBlueprint
 }

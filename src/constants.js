@@ -9,11 +9,13 @@ const SCENES = {
 }
 
 const ENTITIES = {
-    "enemy_basic": require("./entity/enemy_basic.js")
+    "enemy_basic": require("./entity/enemy_basic.js"),
+    "player": require("./entity/player.js")
 }
 
 const ASSETS = {
-    "missing": "sample.jpg"
+    "missing": "sample.jpg",
+    "player": "temp_player.png"
 }
 
 export {
