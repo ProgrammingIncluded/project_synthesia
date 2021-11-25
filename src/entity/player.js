@@ -3,17 +3,18 @@ import { playerBlueprint } from "./blueprints.js";
 
 class Player extends Entity  {
 
-
     constructor() {
         super(playerBlueprint);
         this.elapsed = 0;
         this.spriteName = "player";
         this.maxSpeed = 5;
-        this.accel = 1;
+        this.accel = 3;
         this.vx = 0, this.vy = 0;
+        this.dirX = 0, this.dirY = 0;
         this.shooting = false;
-        window.addEventListener('keydown', this.onKeyPress);
-        window.addEventListener('keyup', this.onKeyUp);
+        this.keysPressed = {"left": false, "right": false, "up": false, "down": false};
+        window.addEventListener('keydown', this.onKeyPress.bind(this));
+        window.addEventListener('keyup', this.onKeyUp.bind(this));
     }
 
     attack(delta, curPos, player, enemies, space) {
@@ -21,7 +22,7 @@ class Player extends Entity  {
     }
 
     movement(elapsed, curPos, player, enemies, space) {
-        return [curPos[0], 100.0 + Math.cos(elapsed/50.0) * 100.0];
+        return [curPos[0] + this.maxSpeed * this.dirX, curPos[1] + this.maxSpeed * this.dirY];
     }
 
     render(elapsed, sprite) {
@@ -37,8 +38,8 @@ class Player extends Entity  {
     }
 
     teardown() {
-        window.removeEventListener('keydown', onKeyPress);
-        window.removeEventListener('keyup', onKeyUp);
+        window.removeEventListener('keydown', this.onKeyPress);
+        window.removeEventListener('keyup', this.onKeyUp);
         super.teardown();
     }
 
@@ -46,20 +47,20 @@ class Player extends Entity  {
         let key = e.code;
         switch(key){
             case "KeyW":
-                console.log("Up");
+                this.dirY = this.keysPressed["down"] ? 0 : -1;
+                this.keysPressed["up"] = true;
                 break;
             case "KeyS":
-                console.log("Down");
+                this.dirY = this.keysPressed["up"] ? 0 : 1;
+                this.keysPressed["down"] = true;
                 break;
             case "KeyA":
-                console.log("Left");
+                this.dirX = this.keysPressed["right"] ? 0 : -1;
+                this.keysPressed["left"] = true;
                 break;
             case "KeyD":
-                console.log("Right");
-                break;
-            case "Space":
-                console.log("peko peko peko");
-                this.shooting = true;
+                this.dirX = this.keysPressed["left"] ? 0 : 1;
+                this.keysPressed["right"] = true;
                 break;
         }
     }
@@ -67,9 +68,21 @@ class Player extends Entity  {
     onKeyUp(e) {
         let key = e.code;
         switch(key){
-            case "Space":
-                this.shooting = false;
-                console.log("Matte peko");
+            case "KeyW":
+                this.dirY = this.keysPressed["down"] ? 1 : 0;
+                this.keysPressed["up"] = false;
+                break;
+            case "KeyS":
+                this.dirY = this.keysPressed["up"] ? -1 : 0;
+                this.keysPressed["down"] = false;
+                break;
+            case "KeyA":
+                this.dirX = this.keysPressed["right"] ? 1 : 0;
+                this.keysPressed["left"] = false;
+                break;
+            case "KeyD":
+                this.dirX = this.keysPressed["left"] ? -1 : 0;
+                this.keysPressed["right"] = false;
                 break;
         }
     }
