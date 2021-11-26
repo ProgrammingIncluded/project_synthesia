@@ -3,7 +3,7 @@ import {G_PIXI_APP, G_HOWL, G_PIXI} from "./bootstrap.js";
 
 // engine
 import AssetManager from "./assets.js";
-import {G_LOGGER, getLevel, setLevel} from "./logger.js";
+import {G_LOGGER} from "./logger.js";
 import {SCENES, BUILD_ASSET_FOLDER, ASSETS, PLAY_AREA} from "./constants.js";
 
 // STD

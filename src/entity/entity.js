@@ -14,14 +14,22 @@ class Entity {
         // Metadata
         this.blueprint = blueprint;
         this.preStates = {...blueprint.preStates};
-        this.name = "DNE";
-        this.spriteName = "missing";
+        this.spriteName = undefined;
+
+        // animation prperties
+        this.curAnimation = undefined;
+        this.animationNames = [];
+        this.animationProp = {
+            loop: false,
+            animationSpeed: 1
+        };
+
 
         // Engine level objects
-        this.sprite = undefined;
+        this.container = new G_PIXI.Container();
+        this._sprite = undefined;
+        this._animations = {};
         this.functions = [];
-        // Should not be modified directly
-        this.node = undefined;
 
         // Helper functions
         this.helpers = {
@@ -29,12 +37,21 @@ class Entity {
         }
     }
 
-    setNode(node) {
-        if (this.node !== undefined) {
-            this.node.removeChild(this.sprite);
+    get sprite() {
+        if (this._sprite === undefined) {
+            G_LOGGER.error("NANI");
+            return this._animations[this.curAnimation];
         }
-        this.node = node;
+        else {
+            return this._sprite;
+        }
     }
+    set sprite(s) {
+        assert(false, "Cannot set sprite, use EnityManager");
+    }
+
+    get position() { return this.container.position; }
+    set position(p) { this.container.position = p; }
 
     enforce(expr) {
         assert(expr);
@@ -42,7 +59,18 @@ class Entity {
 
     // Engine level API
     load() {
-
+        // inject entity logic into each animation logic
+        for (let an of this.animationNames) {
+            let anim = this.animations[an];
+            anim.play = () => {
+                let prevAnim = this.animations[this.curAnimation];
+                prevAnim.stop();
+                prevAnim.renderable = false;
+                this.curAnimation = an;
+                anim.renderable = true;
+                return anim.play();
+            }
+        }
     }
 
     update(delta) {
@@ -50,8 +78,7 @@ class Entity {
     }
 
     teardown() {
-        this.node.removeChild(this.sprite);
-        this.sprite.destroy();
+        this.container.destroy();
     }
 
     pause() {
@@ -167,6 +194,7 @@ class EntityManager {
 
     mutate(entity) {
         let pt = esprima.parseScript(entity.movement.toString());
+        G_LOGGER.log(pt);
         assert(pt.type == "Program", "Loading invalid program");
         assert(pt.body.length == 1, "Should only be passing in one function.");
 
@@ -237,7 +265,7 @@ class EntityManager {
         // TODO: Verification
     }
 
-    load(entityName, node, startingPosition, scale=1) {
+    async load(entityName, node, startingPosition=new G_PIXI.Point(0, 0), scale=1) {
         let entity = new this.sourceCode[entityName]();
         if (!(entity instanceof Entity)) {
             let name = entity.constructor.name;
@@ -245,13 +273,47 @@ class EntityManager {
             throw "NOT AN ENTITY: " + name;
         }
 
+        let hasAnimations = (entity.animationNames.length != 0);
+        assert(((entity.spriteName !== undefined) ^ (hasAnimations), "Entity can only have Animations OR Sprite"));
+
         // Load the sprite into the engine and store the ptr
-        entity.sprite = this.assetManager.loadSprite(entity.spriteName);
-        entity.sprite.anchor.set(0.5); // Can't be called in entity constructor because sprite isn't loaded yet
-        node.addChild(entity.sprite);
-        entity.setNode(node);
-        entity.load();
-        return entity;
+        let loader = G_PIXI.Loader.shared;
+        if (hasAnimations) {
+            // Queue all animations
+            for (const a in entity.animationNames) {
+                loader.add(a);
+            }
+
+            loader.load(() => {
+                for (const a in entity.animations) {
+                    let spritesheet = loader[a].spritesheet;
+                    let animationSprite = G_PIXI.AnimatedSprite(Object.values(spritesheet.textures));
+                    animationSprite.loop = entity.animationProp.loop;
+                    animationSprite.animationSpeed = entity.animationSpeed;
+                    animationSprite.anchor.set(0.5);
+                    animationSprite.renderable = false;
+                    entity.container.addChild(animationSprite);
+                    entity.animations[a.replace(".json", "")] = animationSprite;
+                }
+            });
+
+            assert(curAnimation !== undefined, "An animation must be set.")
+            entity.load();
+            entity.position = startingPosition;
+            node.addChild(entity.container);
+            return entity;
+        }
+        else {
+            entity._sprite = G_PIXI.Sprite.from(`assets/${entity.spriteName}`);
+            entity.sprite.anchor.set(0.5); // Can't be called in entity constructor because sprite isn't loaded yet
+            entity.position = startingPosition;
+
+            entity.load();
+            entity.container.addChild(entity._sprite);
+            node.addChild(entity.container);
+            return entity;
+        }
+
     }
 }
 

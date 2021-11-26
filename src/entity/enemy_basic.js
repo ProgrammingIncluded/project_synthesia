@@ -7,6 +7,7 @@ class EnemyBasic extends Entity  {
         super(enemyBlueprint);
 
         // set maxvelocity to 10
+        this.spriteName = "sample.jpg";
         this.preStates["movement"]["maxVelocity"] = 10.0;
     }
 
@@ -27,16 +28,14 @@ class EnemyBasic extends Entity  {
     // Engine level API
     load() {
         // set some interactive properties
-        this.sprite.interactive = true;
-        this.sprite.buttonMode = true;
+        this.container.interactive = true;
+        this.container.buttonMode = true;
     }
 
     update(elapsed) {
-        let posBuf = this.movement(elapsed, this.sprite.position, undefined, undefined, undefined);
-        this.sprite.position.set(posBuf.x, posBuf.y);
+        let posBuf = this.movement(elapsed, this.position, undefined, undefined, undefined);
+        this.position = posBuf;
     }
 }
 
 module.exports = EnemyBasic;
-
-

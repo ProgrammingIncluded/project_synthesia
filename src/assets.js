@@ -29,6 +29,10 @@ class PixiJSAssetManager {
         let fpath = path.join(BUILD_ASSET_FOLDER, this.getAssetFile(assetName));
         return this.pixijs.Sprite.from(fpath);
     }
+
+    loadAnimation() {
+
+    }
 }
 
 module.exports = PixiJSAssetManager;

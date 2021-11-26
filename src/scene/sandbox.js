@@ -3,7 +3,7 @@ import { G_LOGGER, assert } from "../logger.js";
 
 
 class SandboxScene extends Scene {
-    generateEnemies(number) {
+    async generateEnemies(number) {
         if (this.enemySprites === undefined) {
             this.enemySprites = []
         }
@@ -15,25 +15,39 @@ class SandboxScene extends Scene {
         }
 
         for (let i = 0; i < number; ++i) {
-            this.enemySprites.push(this.eLoader.load("enemy_basic", this.rootNode));
+            this.enemySprites.push((await this.eLoader.load("enemy_basic", this.rootNode, new this.pixi.Point(80, 80))));
         }
 
         for (let es of this.enemySprites) {
-            es.sprite.on("pointerdown", (event) => {
+            es.container.on("pointerdown", (event) => {
+                G_LOGGER.log(event);
                 this.eLoader.mutate(es);
-            })
+            });
         }
     }
 
+    loadUI() {
+        let setupCB =  () => {
+            let sheet = this.pixi.Loader.shared.resources["assets/animation/textbox.json"].spritesheet;
+            let animationSprite = new this.pixi.AnimatedSprite(Object.values(sheet.textures));
+            animationSprite.position = new this.pixi.Point(80, 90);
+            this.rootNode.addChild(animationSprite);
+            animationSprite.loop = false;
+            animationSprite.animationSpeed = 0.5;
+            animationSprite.play();
+        };
+        this.pixi.Loader.shared.add("assets/animation/textbox.json").load(setupCB);
+    }
+
     async load() {
-        this.generateEnemies(1);
+        await this.generateEnemies(1);
         this.elapsed = 0.0;
 
         // TODO:
         // 1. Add player sprite
         // 2. Add alternate sprites (e.g. taking damage)
         this.playerSprites = [
-          this.eLoader.load("player", this.rootNode)
+          (await this.eLoader.load("player", this.rootNode, new this.pixi.Point(0, 90)))
         ]
 
         this.bgm = new this.howl({
@@ -41,6 +55,8 @@ class SandboxScene extends Scene {
             loop: true
         });
         //this.bgm.play();
+
+        // this.loadUI();
 
         return this;
     }
