@@ -1,6 +1,7 @@
 import { Entity } from "./entity.js";
 import { playerBlueprint } from "./blueprints.js";
 import { G_PIXI_APP } from "../bootstrap.js";
+import { PLAY_AREA } from "../constants.js";
 
 class Player extends Entity  {
 
@@ -21,8 +22,20 @@ class Player extends Entity  {
     }
 
     movement(elapsed, curPos, player, enemies, space) {
-        let newX = Math.max(this.sprite.width/2, Math.min(G_PIXI_APP.screen.width - this.sprite.width / 2, curPos[0] + this.maxSpeed * this.dirX));
-        let newY = Math.max(this.sprite.height/2, Math.min(G_PIXI_APP.screen.height - this.sprite.height / 2, curPos[1] + this.maxSpeed * this.dirY));
+        let newX = Math.max(
+            this.sprite.width/2,
+            Math.min(
+                PLAY_AREA.width - this.sprite.width / 2,
+                curPos[0] + this.maxSpeed * this.dirX
+            )
+        );
+        let newY = Math.max(
+            this.sprite.height/2,
+            Math.min(
+                PLAY_AREA.height - this.sprite.height / 2,
+                curPos[1] + this.maxSpeed * this.dirY
+            )
+        );
         return new this.helpers.Pixi.Point(newX, newY);
     }
 

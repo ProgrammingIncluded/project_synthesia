@@ -18,8 +18,18 @@ const ASSETS = {
     "player": "temp_player.png"
 }
 
+// Setup play field constant scaling
+// Set the game's playfield to support auto-scaling
+// Think of this as max design. Any lower and pixels get down sized
+// any higher and pixels get up-scaled.
+const PLAY_AREA = {
+    width: 1280,
+    height:720
+}
+
 export {
     DEV_MODE,
+    PLAY_AREA,
     BUILD_ASSET_FOLDER,
     SCENES,
     ENTITIES,
