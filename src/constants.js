@@ -10,12 +10,8 @@ const SCENES = {
 
 const ENTITIES = {
     "enemy_basic": require("./entity/enemy_basic.js"),
-    "player": require("./entity/player.js")
-}
-
-const ASSETS = {
-    "missing": "sample.jpg",
-    "player": "temp_player.png"
+    "player": require("./entity/player.js"),
+    "textbox": require("./entity/ui/textbox.js")
 }
 
 // Setup play field constant scaling
@@ -32,6 +28,5 @@ export {
     PLAY_AREA,
     BUILD_ASSET_FOLDER,
     SCENES,
-    ENTITIES,
-    ASSETS
+    ENTITIES
 }

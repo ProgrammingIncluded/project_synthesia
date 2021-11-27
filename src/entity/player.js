@@ -8,7 +8,7 @@ class Player extends Entity  {
     constructor() {
         super(playerBlueprint);
         this.elapsed = 0;
-        this.spriteName = "player";
+        this.spriteName = "temp_player.png";
         this.maxSpeed = 5;
         this.vx = 0, this.vy = 0;
         this.dirX = 0, this.dirY = 0;
@@ -26,14 +26,14 @@ class Player extends Entity  {
             this.sprite.width/2,
             Math.min(
                 PLAY_AREA.width - this.sprite.width / 2,
-                curPos[0] + this.maxSpeed * this.dirX
+                curPos.x + this.maxSpeed * this.dirX
             )
         );
         let newY = Math.max(
             this.sprite.height/2,
             Math.min(
                 PLAY_AREA.height - this.sprite.height / 2,
-                curPos[1] + this.maxSpeed * this.dirY
+                curPos.y + this.maxSpeed * this.dirY
             )
         );
         return new this.helpers.Pixi.Point(newX, newY);
@@ -47,9 +47,8 @@ class Player extends Entity  {
     update(delta) {
         this.elapsed += delta;
         // NESW movement
-        let posBuf = [this.sprite.position.x, this.sprite.position.y];
-        posBuf = this.movement(this.elapsed, posBuf, undefined, undefined, undefined);
-        this.sprite.position.set(posBuf.x, posBuf.y);
+        let posBuf = this.movement(this.elapsed, this.container.position, undefined, undefined, undefined);
+        this.container.position = posBuf;
         // Rotate towards mouse location
         this.lookTowards(G_PIXI_APP.renderer.plugins.interaction.mouse.global);
     }
