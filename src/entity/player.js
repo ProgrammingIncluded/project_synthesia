@@ -47,8 +47,8 @@ class Player extends Entity  {
     update(delta) {
         this.elapsed += delta;
         // NESW movement
-        let posBuf = this.movement(this.elapsed, this.sprite.position, undefined, undefined, undefined);
-        this.sprite.position = posBuf;
+        let posBuf = this.movement(this.elapsed, this.container.position, undefined, undefined, undefined);
+        this.container.position = posBuf;
         // Rotate towards mouse location
         this.lookTowards(G_PIXI_APP.renderer.plugins.interaction.mouse.global);
     }

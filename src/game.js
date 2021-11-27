@@ -2,7 +2,6 @@
 import {G_PIXI_APP, G_HOWL, G_PIXI} from "./bootstrap.js";
 
 // engine
-import AssetManager from "./assets.js";
 import {G_LOGGER} from "./logger.js";
 import {SCENES, BUILD_ASSET_FOLDER, ASSETS, PLAY_AREA} from "./constants.js";
 
@@ -22,13 +21,6 @@ class Game {
         this.app = G_PIXI_APP
         this.howler = G_HOWL;
         this.pixi = G_PIXI;
-
-        // Asset management
-        this.assetManager = new AssetManager(
-            this.pixi,
-            BUILD_ASSET_FOLDER,
-            ASSETS
-        );
 
         // Scene management
         this.currentScene = null;
@@ -74,8 +66,7 @@ class Game {
         let scene = new Scene(
             this.rootNode,
             this.pixi,
-            this.howler,
-            this.assetManager
+            this.howler
         );
         this.currentScene = scene;
 

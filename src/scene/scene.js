@@ -5,13 +5,11 @@ class Scene {
         rootNode,
         pixi,
         howl,
-        assets
     ) {
         this.rootNode = rootNode;
         this.pixi = pixi;
         this.howl = howl;
-        this.assets = assets;
-        this.eLoader = new EntityManager(assets);
+        this.eLoader = new EntityManager();
 
         // Check to see if teardown await is required before next loading of scene
         this.teardownAwait = false;

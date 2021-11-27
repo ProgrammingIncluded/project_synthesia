@@ -26,7 +26,7 @@ class SandboxScene extends Scene {
         }
     }
 
-    loadUI() {
+    async loadUI() {
         let setupCB =  () => {
             let sheet = this.pixi.Loader.shared.resources["assets/animation/textbox.json"].spritesheet;
             let animationSprite = new this.pixi.AnimatedSprite(Object.values(sheet.textures));
@@ -42,6 +42,9 @@ class SandboxScene extends Scene {
     async load() {
         await this.generateEnemies(1);
         this.elapsed = 0.0;
+        this.textbox = await this.eLoader.load("textbox", this.rootNode, new this.pixi.Point(80, 80));
+        G_LOGGER.log(this.textbox);
+        this.textbox.sprite.play();
 
         // TODO:
         // 1. Add player sprite
