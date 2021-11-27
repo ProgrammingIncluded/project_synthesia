@@ -14,12 +14,14 @@ class Entity {
         // Metadata
         this.blueprint = blueprint;
         this.preStates = {...blueprint.preStates};
+
+        // Set to fetch sprites intead of animation
         this.spriteName = undefined;
 
         // animation prperties, use before load()
         this._curAnimation = undefined;
+        // Set to fetch animation instead of sprites
         this.animationNames = [];
-        this.animationFiles = [];
         this.animationProp = {
             loop: false,
             animationSpeed: 1
@@ -275,24 +277,19 @@ class EntityManager {
             throw "NOT AN ENTITY: " + name;
         }
 
-        let hasAnimations = (entity.animationFiles.length != 0);
-        assert(((entity.spriteName !== undefined) ^ (hasAnimations), "Entity can only have Animations OR Sprite"));
-
+        let hasAnimations = entity.spriteName.endsWith(".json");
         // Load the sprite into the engine and store the ptr
         let loader = G_PIXI.Loader.shared;
         if (hasAnimations) {
             // Queue all animations
-            for (const a of entity.animationFiles) {
-                // TODO should use constants
-                loader = loader.add(`assets/${a}`);
-            }
-
+            loader = loader.add(`assets/${entity.spriteName}`);
             let resources = await new Promise((resolve, reject) => loader.load((loader, resources) => resolve(resources)));
+            let sheet = resources[`assets/${entity.spriteName}`].spritesheet;
+            let animationNames = sheet.animations;
+            entity.animationNames = Object.keys(sheet.animations);
 
-            for (let a of entity.animationFiles) {
-                let sheet = resources[`assets/${a}`].spritesheet;
-                let animationName = a.substr(a.lastIndexOf('/') + 1).replace(".json", "");
-                let animationSprite = new G_PIXI.AnimatedSprite(Object.values(sheet.textures));
+            for (let animationName of entity.animationNames) {
+                let animationSprite = new G_PIXI.AnimatedSprite(sheet.animations[animationName]);
                 entity._animations[animationName] = animationSprite;
                 animationSprite.position = startingPosition;
                 animationSprite.loop = entity.animationProp.loop;
@@ -300,7 +297,6 @@ class EntityManager {
                 animationSprite.anchor.set(0.5);
                 animationSprite.renderable = false;
                 entity.container.addChild(animationSprite);
-                entity.animationNames.push(animationName);
             }
 
             entity.load();

@@ -5,15 +5,13 @@ class Textbox extends Entity {
     constructor() {
         super({});
 
-        this.animationFiles = [
-            "animation/textbox.json"
-        ];
+        this.spriteName = "animation/textbox.json";
         this.animationProp.loop = false;
         this.animationProp.animationSpeed = 0.5;
     }
 
     load() {
-        this.curAnimation = "textbox";
+        this.curAnimation = "normal";
     }
 }
 

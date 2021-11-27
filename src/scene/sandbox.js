@@ -45,6 +45,7 @@ class SandboxScene extends Scene {
         this.textbox = await this.eLoader.load("textbox", this.rootNode, new this.pixi.Point(80, 80));
         G_LOGGER.log(this.textbox);
         this.textbox.sprite.play();
+        this.textbox.sprite.play();
 
         // TODO:
         // 1. Add player sprite
