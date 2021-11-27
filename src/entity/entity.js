@@ -33,6 +33,8 @@ class Entity {
         this._sprite = undefined;
         this._animations = {};
         this.functions = [];
+        this.eLoader = null;
+        this.parent = null;
 
         // Helper functions
         this.helpers = {
@@ -66,12 +68,14 @@ class Entity {
         assert(false, "Cannot set sprite, use EnityManager");
     }
 
+    /* Syntactic helpers */
     get position() { return this.container.position; }
     set position(p) { this.container.position = p; }
+    play() { this.sprite.play(); }
+    stop() { this.sprite.stop(); }
 
-    enforce(expr) {
-        assert(expr);
-    }
+    // Used for binding mutators
+    enforce(expr) { assert(expr); }
 
     // Engine level API
     load() {
@@ -95,8 +99,8 @@ class Entity {
     lookTowards(target) {
         assert(target.type === G_PIXI.IPoint, "Target of lookTowards must be a PIXI IPoint object.");
         assert(target.x !== null && target.y !== null, "lookTowards target x or y was null.");
-        let x1 = this.sprite.position.x;
-        let y1 = this.sprite.position.y;
+        let x1 = this.container.position.x;
+        let y1 = this.container.position.y;
         let op = target.y - y1;
         let ad = target.x - x1;
         let sigma = Math.atan(op/ad); // angle between mouse pointer and horizontal
@@ -106,10 +110,10 @@ class Entity {
         // tangent isn't defined at +/- pi/2.
         // positive value means mouse right of cursor
         let leftRight = Math.sign(ad);
-        let theta = sigma === NaN || leftRight === 0 ? this.sprite.rotation : leftRight * Math.PI/2 + sigma;
+        let theta = sigma === NaN || leftRight === 0 ? this.container.rotation : leftRight * Math.PI/2 + sigma;
         // rotation is the radian property; angle is the degree on.
         // per Pixi docs, they do the same thing
-        this.sprite.rotation = theta;
+        this.container.rotation = theta;
     }
 }
 
@@ -269,7 +273,7 @@ class EntityManager {
         // TODO: Verification
     }
 
-    async load(entityName, node, startingPosition=new G_PIXI.Point(0, 0), scale=1) {
+    async load(entityName, node, startingPosition=new G_PIXI.Point(0, 0), ...varArgs) {
         let entity = new this.sourceCode[entityName]();
         if (!(entity instanceof Entity)) {
             let name = entity.constructor.name;
@@ -281,11 +285,14 @@ class EntityManager {
         // Load the sprite into the engine and store the ptr
         let loader = G_PIXI.Loader.shared;
         if (hasAnimations) {
-            // Queue all animations
-            loader = loader.add(`assets/${entity.spriteName}`);
-            let resources = await new Promise((resolve, reject) => loader.load((loader, resources) => resolve(resources)));
-            let sheet = resources[`assets/${entity.spriteName}`].spritesheet;
-            let animationNames = sheet.animations;
+            let jsonLoc = `assets/${entity.spriteName}`;
+            let resources = loader.resources;
+            if (!loader.resources[jsonLoc]) {
+                loader = loader.add(jsonLoc);
+                resources = await new Promise((resolve, reject) => loader.load((loader, resources) => resolve(resources)));
+            }
+
+            let sheet = resources[jsonLoc].spritesheet;
             entity.animationNames = Object.keys(sheet.animations);
 
             for (let animationName of entity.animationNames) {
@@ -301,6 +308,8 @@ class EntityManager {
 
             entity.load();
             entity.position = startingPosition;
+            entity.parent = node;
+            entity.eLoader = this;
             node.addChild(entity.container);
             return entity;
         }
@@ -309,8 +318,10 @@ class EntityManager {
             entity.sprite.anchor.set(0.5); // Can't be called in entity constructor because sprite isn't loaded yet
             entity.position = startingPosition;
 
-            entity.load();
+            entity.load(...varArgs);
             entity.container.addChild(entity._sprite);
+            entity.parent = node;
+            entity.eLoader = this;
             node.addChild(entity.container);
             return entity;
         }

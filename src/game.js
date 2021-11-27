@@ -3,7 +3,7 @@ import {G_PIXI_APP, G_HOWL, G_PIXI} from "./bootstrap.js";
 
 // engine
 import {G_LOGGER} from "./logger.js";
-import {SCENES, BUILD_ASSET_FOLDER, ASSETS, PLAY_AREA} from "./constants.js";
+import {SCENES, VIRTUAL_WINDOW} from "./constants.js";
 
 // STD
 const path = require("path");
@@ -26,7 +26,7 @@ class Game {
         this.currentScene = null;
 
         // Virtual screen
-        this.playArea = PLAY_AREA;
+        this.playArea = VIRTUAL_WINDOW;
 
         let container = new G_PIXI.Container();
         container.width = this.playArea.width;

@@ -14,7 +14,8 @@
     "grunt-contrib-uglify-es": "github:gruntjs/grunt-contrib-uglify#harmony",
     "howler": "^2.2.3",
     "pino": "^7.1.0",
-    "pixi.js": "^6.2.0"
+    "pixi.js": "^6.2.0",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

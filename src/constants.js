@@ -11,21 +11,23 @@ const SCENES = {
 const ENTITIES = {
     "enemy_basic": require("./entity/enemy_basic.js"),
     "player": require("./entity/player.js"),
-    "textbox": require("./entity/ui/textbox.js")
+    "textbox": require("./entity/ui/textbox.js"),
+    "editor": require("./entity/ui/editor.js"),
+    "profile": require("./entity/ui/profile.js")
 }
 
 // Setup play field constant scaling
 // Set the game's playfield to support auto-scaling
 // Think of this as max design. Any lower and pixels get down sized
 // any higher and pixels get up-scaled.
-const PLAY_AREA = {
+const VIRTUAL_WINDOW = {
     width: 1280,
     height:720
 }
 
 export {
     DEV_MODE,
-    PLAY_AREA,
+    VIRTUAL_WINDOW,
     BUILD_ASSET_FOLDER,
     SCENES,
     ENTITIES
