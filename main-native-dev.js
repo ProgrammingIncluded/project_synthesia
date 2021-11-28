@@ -2,7 +2,7 @@
 // https://babeljs.io/docs/en/babel-polyfill/
 import "@babel/polyfill";
 import {setLevel, LOGGER_LEVEL_DEBUG, G_LOGGER} from "./src/logger.js"
-import { loadFonts } from "./src/bootstrap.js";
+import { bootstrap } from "./src/bootstrap.js";
 setLevel(LOGGER_LEVEL_DEBUG);
 
 
@@ -10,7 +10,7 @@ setLevel(LOGGER_LEVEL_DEBUG);
 import Game from "./src/game.js";
 
 let game;
-loadFonts().then(()=>{
+bootstrap().then(()=>{
     game = new Game();
     game.loadScene.bind(game, "title")();
     return game

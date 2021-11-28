@@ -1,6 +1,7 @@
 import { Entity } from "./entity.js";
 import { enemyBlueprint } from "./blueprints.js";
 import { G_LOGGER } from "../logger.js";
+import { G_EDITOR } from "../logic/editor.js";
 
 class EnemyBasic extends Entity  {
     constructor() {
@@ -33,6 +34,7 @@ class EnemyBasic extends Entity  {
 
         this.container.on("pointerdown", (event) => {
             this.eLoader.mutate(this);
+            G_EDITOR.displaySafe(this.movement.toString());
         });
     }
 
