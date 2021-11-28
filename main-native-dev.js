@@ -12,7 +12,8 @@ import Game from "./src/game.js";
 let game;
 loadFonts().then(()=>{
     game = new Game();
-    return game.loadScene.bind(game, "sandbox")();
+    game.loadScene.bind(game, "sandbox")();
+    return game
 }).then((game) => {
     game.start();
 }).catch((err) => {
