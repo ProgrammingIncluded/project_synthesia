@@ -9,10 +9,14 @@ setLevel(LOGGER_LEVEL_DEBUG);
 // Start the game
 import Game from "./src/game.js";
 
-loadFonts().then(async ()=>{
-    let game = new Game();
-    await game.loadScene.bind(game, "sandbox")();
-    return game;
+let game;
+loadFonts().then(()=>{
+    game = new Game();
+    return game.loadScene.bind(game, "sandbox")();
 }).then((game) => {
+    game.start();
+}).catch((err) => {
+    // TODO: Fix external
+    G_LOGGER.error(err);
     game.start();
 });

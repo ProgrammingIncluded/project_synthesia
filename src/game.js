@@ -41,8 +41,6 @@ class Game {
         G_PIXI_APP.stage.addChild(this.rootNode);
 
         G_PIXI_APP.renderer.on("resize", (width, height) => {
-            G_LOGGER.log(width);
-            G_LOGGER.log(height);
             this.resize(width, height);
         });
     }
