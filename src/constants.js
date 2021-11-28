@@ -13,7 +13,8 @@ const ENTITIES = {
     "player": require("./entity/player.js"),
     "textbox": require("./entity/ui/textbox.js"),
     "editor": require("./entity/ui/editor.js"),
-    "profile": require("./entity/ui/profile.js")
+    "profile": require("./entity/ui/profile.js"),
+    "title": require("./entity/ui/title.js")
 }
 
 // Setup play field constant scaling
