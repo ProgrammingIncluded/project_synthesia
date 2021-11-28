@@ -65,7 +65,7 @@ class Entity {
     }
 
     set sprite(s) {
-        assert(false, "Cannot set sprite, use EnityManager");
+        assert(false, "Cannot set sprite, use EntityManager");
     }
 
     /* Syntactic helpers */

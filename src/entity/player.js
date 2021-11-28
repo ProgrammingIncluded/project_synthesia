@@ -58,7 +58,8 @@ class Player extends Entity  {
         let posBuf = this.movement(this.elapsed, this.container.position, undefined, undefined, undefined);
         this.container.position = posBuf;
         // Rotate towards mouse location
-        this.lookTowards(G_PIXI_APP.renderer.plugins.interaction.mouse.global);
+        // Convert mouse target point to game field coordinate system
+        this.lookTowards(this.parent.toLocal(G_PIXI_APP.renderer.plugins.interaction.mouse.global));
     }
 
     teardown() {

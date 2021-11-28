@@ -3,7 +3,6 @@ import { Playscreen } from "../logic/playscreen.js";
 import { Board } from "../logic/board.js";
 import { G_LOGGER, assert } from "../logger.js";
 
-
 class SandboxScene extends Scene {
     async load() {
         this.playscreen = new Playscreen(this.rootNode, this.eLoader);
