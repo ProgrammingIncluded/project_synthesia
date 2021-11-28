@@ -57,6 +57,10 @@ class Game {
             G_LOGGER.error(sceneName + " is not a valid scene.")
         }
 
+        if (this.currentScene != null) {
+            await this.currentScene.teardown();
+        }
+
         let Scene = SCENES[sceneName];
         G_LOGGER.debug(`Loading scene ${sceneName}`);
 
@@ -64,7 +68,8 @@ class Game {
         let scene = new Scene(
             this.rootNode,
             this.pixi,
-            this.howler
+            this.howler,
+            this
         );
         this.currentScene = scene;
 

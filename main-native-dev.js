@@ -12,11 +12,11 @@ import Game from "./src/game.js";
 let game;
 loadFonts().then(()=>{
     game = new Game();
-    game.loadScene.bind(game, "sandbox")();
+    game.loadScene.bind(game, "title")();
     return game
 }).then((game) => {
     game.start();
-}).catch((err) => {
+}).catch(async (err) => {
     // TODO: Fix external
     G_LOGGER.error(err);
     game.start();

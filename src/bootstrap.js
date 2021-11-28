@@ -34,7 +34,7 @@ async function loadFonts() {
                 // Compile bitmap fonts
                 BITMAP_FONTS = {
                     "dialogue": G_PIXI.BitmapFont.from("dialogue", {
-                        fontFamily: FONTNAMES.dialogue,
+                        fontFamily: FONTNAMES.dialogue, // TODO: use local fonts
                         fontSize: 16,
                         strokeThickness: 2,
                         fill: "white",
