@@ -92,7 +92,13 @@ let playerBlueprint = blueFactory([
                                   HackingBlueprint
                                 ]);
 
+let bulletBlueprint = blueFactory([
+                                  MovementBlueprint,
+                                  RenderBlueprint
+                                ]);
+
 export {
     enemyBlueprint,
-    playerBlueprint
+    playerBlueprint,
+    bulletBlueprint
 }
