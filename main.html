@@ -1,9 +1,18 @@
 <!doctype html>
 <html>
   <head>
+    <style type="text/css" media="screen">
+      .grid {
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+      }
+    </style>
   </head>
   <body>
-      <div id="render" style="width: calc(100% - 20px); height: calc((100vw - 20px) * 0.5625);"></div>
+      <div class="container">
+        <div class="grid" id="render"></div><div class="grid" id="text-editor"></div>
+      </div>
       <script src="bundle.js"></script>
   </body>
 </html>

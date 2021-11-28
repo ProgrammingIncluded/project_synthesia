@@ -2,9 +2,14 @@ import Scene from "./scene.js";
 import { Playscreen } from "../logic/playscreen.js";
 import { Board } from "../logic/board.js";
 import { G_LOGGER, assert } from "../logger.js";
+import { G_EDITOR } from "../logic/editor.js";
 
 class SandboxScene extends Scene {
     async load() {
+        // Unlock for now. TODO: Add more lock and unlock depending on game.
+        G_EDITOR.unlock();
+        G_EDITOR.randomEmote("happy");
+
         this.playscreen = new Playscreen(this.rootNode, this.eLoader);
         this.playscreen.loadUI().then(()=>{
             this.playscreen.ui.textbox.sprite.onComplete = () => {
