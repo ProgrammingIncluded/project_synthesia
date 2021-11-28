@@ -1,7 +1,7 @@
 import { Entity } from "./entity.js";
 import { playerBlueprint } from "./blueprints.js";
 import { G_PIXI_APP } from "../bootstrap.js";
-import { PLAY_AREA } from "../constants.js";
+import { G_LOGGER } from "../logger.js";
 
 class Player extends Entity  {
 
@@ -13,8 +13,12 @@ class Player extends Entity  {
         this.vx = 0, this.vy = 0;
         this.dirX = 0, this.dirY = 0;
         this.keysPressed = {"left": false, "right": false, "up": false, "down": false};
+
         window.addEventListener('keydown', this.onKeyPress.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));
+
+        // set during load
+        this.board = undefined;
     }
 
     attack(delta, curPos, player, enemies, space) {
@@ -25,14 +29,14 @@ class Player extends Entity  {
         let newX = Math.max(
             this.sprite.width/2,
             Math.min(
-                PLAY_AREA.width - this.sprite.width / 2,
+                this.board.playAreaDim.width - this.sprite.width / 2,
                 curPos.x + this.maxSpeed * this.dirX
             )
         );
         let newY = Math.max(
             this.sprite.height/2,
             Math.min(
-                PLAY_AREA.height - this.sprite.height / 2,
+                this.board.playAreaDim.height - this.sprite.height / 2,
                 curPos.y + this.maxSpeed * this.dirY
             )
         );
@@ -44,6 +48,10 @@ class Player extends Entity  {
     }
 
     // Engine level API
+    load(board) {
+        this.board = board;
+    }
+
     update(delta) {
         this.elapsed += delta;
         // NESW movement

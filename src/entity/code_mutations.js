@@ -38,6 +38,7 @@ class BasicConstOpMutation extends Mutation {
     mutate(node, state) {
         if (node.type == "BinaryExpression") {
             let newValue = Math.floor(Math.random() * 10);
+            let replaceLeft = (Math.floor(Math.random()) < 0.5);
             let newNode = {
                 "type": "BinaryExpression",
                 "operator": this.getRandomOp(),
@@ -48,10 +49,43 @@ class BasicConstOpMutation extends Mutation {
                     "raw": newValue.toString()
                 }
             }
-            node.left = newNode;
+            let literal = {
+                "type": "Literal",
+                "value": newValue,
+                "raw": newValue.toString()
+            }
+
+            // This can be compressed but may reduce readability
+            if (replaceLeft) {
+                newNode["left"] = node.left;
+                newNode["right"] = literal;
+                node.left = newNode;
+            }
+            else {
+                newNode["right"] = node.right;
+                newNode["left"] = literal;
+                node.right = newNode;
+            }
             return {"node": node, "state": state};
         }
         return {"node": node, "state": state};
+    }
+}
+
+class BasicCyclicMutation extends Mutation {
+    constructor() {
+        super();
+        this.allowed = [
+            "BinaryExpression"
+        ];
+    }
+
+    check(node, state) {
+        return this.allowed.includes(node.type);
+    }
+
+    mutate(node, state) {
+        // TODO: fill me
     }
 }
 

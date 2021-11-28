@@ -30,6 +30,10 @@ class EnemyBasic extends Entity  {
         // set some interactive properties
         this.container.interactive = true;
         this.container.buttonMode = true;
+
+        this.container.on("pointerdown", (event) => {
+            this.eLoader.mutate(this);
+        });
     }
 
     update(elapsed) {

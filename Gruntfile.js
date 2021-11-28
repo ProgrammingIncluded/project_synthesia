@@ -22,7 +22,7 @@ module.exports = function (grunt) {
     }
     else {
         copyFiles = [
-                    {src: ["main.html"], dest: "build/native/main.html"},
+                    {src: ["main.html"], dest: "build/native/index.html"},
                     {expand: true, src: ["assets/**"], dest: "build/native"},
                 ];
     }
