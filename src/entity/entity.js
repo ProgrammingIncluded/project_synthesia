@@ -27,9 +27,10 @@ class Entity {
             animationSpeed: 1
         };
 
-
         // Engine level objects
         this.container = new G_PIXI.Container();
+        // Useful reference for logic and other custom classes.
+        this.container.entity = this;
         this._sprite = undefined;
         this._animations = {};
         this.functions = [];

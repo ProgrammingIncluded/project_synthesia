@@ -12,6 +12,8 @@ class EnemyBasic extends Entity  {
         this.preStates["movement"]["maxVelocity"] = 10.0;
         this.shootFreq = 50;
         this.lastAttacked = 0;
+
+        this.elapsed = 0;
     }
 
     attack(elapsed, curPos, player, enemies, space) {
@@ -53,10 +55,11 @@ class EnemyBasic extends Entity  {
         this.board = board;
     }
 
-    update(elapsed) {
-        let posBuf = this.movement(elapsed, this.position, undefined, undefined, undefined);
+    update(delta) {
+        this.elapsed += delta;
+        let posBuf = this.movement(this.elapsed, this.position, undefined, undefined, undefined);
         this.position = posBuf;
-        this.attack(elapsed, this.position, undefined, undefined, undefined);
+        this.attack(this.elapsed, this.position, undefined, undefined, undefined);
     }
 }
 
