@@ -171,11 +171,13 @@ class Board {
         let playerEntity = await this.eLoader.load("player", this.playContainer, new G_PIXI.Point(0,  200), this);
         this.entities.player = playerEntity;
 
-        this.boardTree = new BoardTree(playerEntity, this.playContainer, this.eLoader, 512, 512, 256);
+        let boardSize = 1024 * 4;
+        let chunkSize = 256;
+        this.boardTree = new BoardTree(playerEntity, this.playContainer, this.eLoader, boardSize, boardSize, chunkSize);
         for (let i = 0; i < 1000; ++i) {
             this.boardTree.addEntity("enemy_basic",
-                Math.ceil(Math.random() * 512),
-                Math.ceil(Math.random() * 512))
+                Math.floor(Math.random() * boardSize),
+                Math.floor(Math.random() * boardSize))
         }
 
         // Set a period of resetting the enemy
