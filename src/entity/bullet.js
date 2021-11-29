@@ -5,14 +5,15 @@ import { G_LOGGER } from "../logger.js";
 
 class Bullet extends Entity {
 
-    constructor() {
-
+    constructor(maxSpeed, rotation, origin) {
+        super(bulletBlueprint);
+        this.spriteName = "bullet.png";
     }
 
     // by default, bullets just move in a straight line at a fixed speed.
     movement(elapsed, curPos, player, enemies, space) {
-        let newX = curPos.x + this.maxSpeed * Math.cos(this.rotation);
-        let newY = curPos.y + this.maxSpeed * Math.sin(this.rotation);
+        let newX = curPos.x + this.maxSpeed * Math.cos(this.container.rotation);
+        let newY = curPos.y + this.maxSpeed * Math.sin(this.container.rotation);
         return new this.helpers.Pixi.Point(newX, newY);
     }
 
@@ -20,16 +21,17 @@ class Bullet extends Entity {
         return sprite;
     }
 
-    // Engine level API
-    load(board) {
-        this.board = board;
+    load(maxSpeed, rotation) {
+        this.maxSpeed = maxSpeed ?? 5;
+        this.container.rotation = rotation - Math.PI/2 ?? 0;
+        this._sprite.rotation -= Math.PI/2;
     }
 
+    // Engine level API
     update(delta) {
         this.elapsed += delta;
         // NESW movement
-        let posBuf = this.movement(this.elapsed, this.container.position, undefined, undefined, undefined);
-
+        let posBuf = this.movement(undefined, this.container.position, undefined, undefined, undefined);
         this.container.position = posBuf;
     }
 
@@ -37,3 +39,5 @@ class Bullet extends Entity {
         super.teardown();
     }
 }
+
+module.exports = Bullet;

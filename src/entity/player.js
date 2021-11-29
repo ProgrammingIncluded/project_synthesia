@@ -2,6 +2,7 @@ import { Entity } from "./entity.js";
 import { playerBlueprint } from "./blueprints.js";
 import { G_PIXI_APP } from "../bootstrap.js";
 import { G_LOGGER } from "../logger.js";
+import { Bullet } from "./bullet.js";
 
 class Player extends Entity  {
 
@@ -10,9 +11,11 @@ class Player extends Entity  {
         this.elapsed = 0;
         this.spriteName = "temp_player.png";
         this.maxSpeed = 5;
+        this.health = 5;
+        this.shootFreq = 5;
         this.vx = 0, this.vy = 0;
         this.dirX = 0, this.dirY = 0;
-        this.keysPressed = {"left": false, "right": false, "up": false, "down": false};
+        this.keysPressed = {"left": false, "right": false, "up": false, "down": false, "space": false};
 
         window.addEventListener('keydown', this.onKeyPress.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));
@@ -21,8 +24,14 @@ class Player extends Entity  {
         this.board = undefined;
     }
 
-    attack(delta, curPos, player, enemies, space) {
-        return 0;
+    attack(elapsed, curPos, player, enemies, space) {
+        if (elapsed < this.shootFreq) {
+            return;
+        }
+        this.board.eLoader.load("bullet", this.board.playContainer, this.container.position, this.maxSpeed, this.container.rotation).then((b)=>{
+            this.board.entities.bullets.push(b);
+        });
+        this.elapsed = 0; // reset counter if we fired
     }
 
     movement(elapsed, curPos, player, enemies, space) {
@@ -53,13 +62,19 @@ class Player extends Entity  {
     }
 
     update(delta) {
+        // Elapsed serves as our counter to limit bullet firing frequency
         this.elapsed += delta;
         // NESW movement
-        let posBuf = this.movement(this.elapsed, this.container.position, undefined, undefined, undefined);
+        let posBuf = this.movement(undefined, this.container.position, undefined, undefined, undefined);
         this.container.position = posBuf;
         // Rotate towards mouse location
         // Convert mouse target point to game field coordinate system
         this.lookTowards(this.parent.toLocal(G_PIXI_APP.renderer.plugins.interaction.mouse.global));
+        // Hit testing
+        // Shooting
+        if(this.keysPressed["space"]) {
+            this.attack(this.elapsed, this.container.position, undefined, undefined, undefined);
+        }
     }
 
     teardown() {
@@ -87,6 +102,9 @@ class Player extends Entity  {
                 this.dirX = this.keysPressed["left"] ? 0 : 1;
                 this.keysPressed["right"] = true;
                 break;
+            case "Space":
+                this.keysPressed["space"] = true;
+                break;
         }
     }
 
@@ -108,6 +126,9 @@ class Player extends Entity  {
             case "KeyD":
                 this.dirX = this.keysPressed["left"] ? -1 : 0;
                 this.keysPressed["right"] = false;
+                break;
+            case "Space":
+                this.keysPressed["space"] = false;
                 break;
         }
     }
