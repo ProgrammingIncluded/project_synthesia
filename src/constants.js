@@ -9,6 +9,7 @@ const SCENES = {
 }
 
 const ENTITIES = {
+    "bullet": require("./entity/bullet.js"),
     "enemy_basic": require("./entity/enemy_basic.js"),
     "player": require("./entity/player.js"),
     "textbox": require("./entity/ui/textbox.js"),

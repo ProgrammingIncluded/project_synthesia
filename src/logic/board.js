@@ -16,7 +16,9 @@ class Board {
         this.elapsed = 0.0;
         this.entities = {
             player: null,
-            enemies: []
+            enemies: [],
+            bullets: [],
+            deadBullets: []
         }
     }
 
@@ -30,7 +32,7 @@ class Board {
         });
 
 
-        let loadEnemies = this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90)).then((v)=>{
+        let loadEnemies = this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90), this).then((v)=>{
             this.entities.enemies.push(v);
         });
 
@@ -39,7 +41,7 @@ class Board {
                 this.entities.enemies[0].teardown();
             }
             this.entities.enemies = [];
-            this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90)).then((v) => {
+            this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90), this).then((v) => {
                 this.entities.enemies.push(v);
             })
         }, 3000);
@@ -52,6 +54,16 @@ class Board {
         this.entities.player.update(delta);
         this.entities.enemies.forEach((enemy)=>{
             enemy.update(this.elapsed);
+        });
+
+        this.entities.bullets.forEach((bullet, idx, bullets)=>{
+            bullet.update(delta);
+            // destroy bullet if off screen
+            let bpos = bullet.container.position;
+            if(bpos.x < 0 || bpos.x > this.playAreaDim.width || bpos.y < 0 || bpos.y > this.playAreaDim.height) {
+                bullets.splice(idx, 1);
+                bullet.teardown();
+            }
         });
     }
 
