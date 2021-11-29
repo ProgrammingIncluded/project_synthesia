@@ -10,6 +10,7 @@ class Bullet extends Entity {
         this.spriteName = "bullet.png";
         this.collidable = true;
         this.collideLayer = 2;
+        this.dead = false;
 
         // set during load
         this.boardTree = undefined;
@@ -56,6 +57,7 @@ class Bullet extends Entity {
     }
 
     teardown() {
+        this.dead = true;
         super.teardown();
     }
 }

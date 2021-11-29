@@ -213,10 +213,23 @@ class Board {
 
         this.entities = {
             player: null,
-            enemies: [],
-            bullets: [],
-            deadBullets: []
+            playerBullets: []
         }
+    }
+
+    // Fires a bullet that is immune to chunk culling
+    fireGlobalBullet(maxSpeed, containerOrigin) {
+        this.eLoader.load(
+            "bullet",
+            this.playContainer,
+            new G_PIXI.Point(containerOrigin.x, containerOrigin.y),
+            this.boardTree,
+            maxSpeed,
+            containerOrigin.rotation,
+            false
+        ).then((bullet) =>{
+            this.entities.playerBullets.push(bullet);
+        });
     }
 
     async load() {
@@ -250,6 +263,13 @@ class Board {
 
     update(delta) {
         this.boardTree.update(delta);
+        this.entities.playerBullets = this.entities.playerBullets.reduce((acc, curVal) => {
+            curVal.update(delta);
+            if (!curVal.dead) {
+                acc.push(curVal);
+            }
+            return acc;
+        }, []);
     }
 
     async teardown() {

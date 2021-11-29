@@ -1,6 +1,6 @@
 import { Entity } from "./entity.js";
 import { playerBlueprint } from "./blueprints.js";
-import { G_PIXI_APP, G_HOWL } from "../bootstrap.js";
+import { G_PIXI, G_PIXI_APP, G_HOWL } from "../bootstrap.js";
 import { G_LOGGER } from "../logger.js";
 import { Bullet } from "./bullet.js";
 
@@ -23,17 +23,11 @@ class Player extends Entity  {
         window.addEventListener('keyup', this.onKeyUp.bind(this));
 
         // set during load
-        this.boardTree = undefined;
+        this.board = undefined;
     }
 
     fireBullet() {
-        this.boardTree.addEntity(
-            "bullet",
-            this.position.x,
-            this.position.y,
-            this.maxSpeed,
-            this.container.rotation, false
-        );
+        this.board.fireGlobalBullet(this.maxSpeed, this.container);
     }
 
     attack(elapsed, curPos, player, enemies, space) {
