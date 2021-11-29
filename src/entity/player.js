@@ -57,6 +57,10 @@ class Player extends Entity  {
         return sprite;
     }
 
+    damage() {
+        console.log("itai itai itai");
+    }
+
     // Engine level API
     load(board) {
         this.board = board;

@@ -35,6 +35,10 @@ class EnemyBasic extends Entity  {
         return sprite;
     }
 
+    damage() {
+        console.log("c r i t i c a l  e r r o r");
+    }
+
     // Engine level API
     load(board) {
         // set some interactive properties
