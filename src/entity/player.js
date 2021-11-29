@@ -58,7 +58,7 @@ class Player extends Entity  {
     }
 
     damage() {
-        console.log("itai itai itai");
+        G_LOGGER.debug("itai itai itai");
     }
 
     // Engine level API

@@ -36,7 +36,7 @@ class EnemyBasic extends Entity  {
     }
 
     damage() {
-        console.log("c r i t i c a l  e r r o r");
+        G_LOGGER.debug("c r i t i c a l  e r r o r");
     }
 
     // Engine level API
