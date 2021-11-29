@@ -12,18 +12,20 @@ import { G_LOGGER } from "../logger.js";
 // - Any player adjacent chunk that is within 1/3 the distance is toggled to update and render
 // - Any chunk outside that range no longer updates
 class BoardTree {
-    constructor(playerEntity, rootContainer, sizeX, sizeY, chunkSize=256) {
+    constructor(playerEntity, rootContainer, eLoader, sizeX, sizeY, chunkSize=256) {
         // To save some hassle, playerEntity should be of type Player for now.
         // The properties is that users can move the player every render loop.
         // Due to dynamic loading, cannot assert to check here.
 
         this.root = rootContainer;
+        this.eLoader = eLoader;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.chunkSize = chunkSize;
 
         // private
         this._containerLookup = {};
+        this._renderedContainers = [];
 
         // the player is specially tracked because they are what makes the world update
         this.playerEntity = playerEntity;
@@ -44,25 +46,31 @@ class BoardTree {
                 this._addContainer(container, x, y);
             }
         }
-
-        this.getContainer(
-            playerEntity.position.x,
-            playerEntity.position.y
-        ).addChild(this.playerEntity.container);
     }
 
     // Private functions
     _addContainer(container, x, y) {
+        container.renderable = false;
         this._containerLookup[[x, y].toString()] = container;
+        this.root.addChild(container);
     }
 
     // Public functions
     // Should be called every render loop
     update(delta) {
+        this.playerEntity.update(delta);
         let containers = this.getActiveContainers(this.playerEntity.position.x, this.playerEntity.position.y);
+
+        // toggle off all containers
+        for (let con of this._renderedContainers) {
+            con.renderable = false;
+        }
+        this._renderedContainers = [];
 
         // Update each container
         for (let con of containers) {
+            con.renderable = true;
+            this._renderedContainers.push(con);
             for (let child of con.children) {
                 child.entity.update(delta);
             }
@@ -91,6 +99,10 @@ class BoardTree {
         let containingChunkX = Math.floor(x / this.chunkSize) * this.chunkSize;
         let containingChunkY = Math.floor(y / this.chunkSize) * this.chunkSize;
 
+        // Clip to within board game size, possible with positive values
+        containingChunkX = Math.min(containingChunkX, this.sizeX - this.chunkSize);
+        containingChunkY = Math.min(containingChunkY, this.sizeY - this.chunkSize);
+
         // Grab containing chunk and determine quadrant
         // Grab midpoint
         let midpointOffset = Math.floor(this.chunkSize/2);
@@ -100,6 +112,7 @@ class BoardTree {
         // Depending on the quadrant, go and change the values
         let xOffset = (midpointX > midpointOffset ? 1 : -1) * this.chunkSize;
         let yOffset = (midpointY > midpointOffset ? 1: -1) * this.chunkSize;
+
         let coordsRelativeToContainingChunk = [
             [0, 0],
             [xOffset, 0],
@@ -122,12 +135,12 @@ class BoardTree {
         return fetchedContainerResults;
     }
 
-    addWall(wall) {
+    async addEntity(entityName, x, y) {
+        assert(x < self.sizeX, "Entity placed farther than gamespace");
+        assert(y < self.sizeY, "Entity placed farther than gamespace");
 
-    }
-
-    addEnemy(enemy) {
-        this.getContainer(enemy.position.x, enemy.position.y).addChild(enemy.container);
+        let container = this.getContainer(x, y);
+        return this.eLoader.load(entityName, container, new G_PIXI.Point(x, y));
     }
 }
 
@@ -155,40 +168,29 @@ class Board {
         // TODO:
         // 1. Add player sprite
         // 2. Add alternate sprites (e.g. taking damage)
-        let loadPlayer = this.eLoader.load("player", this.playContainer, new G_PIXI.Point(0,  200), this).then((v)=>{
-            this.entities.player = v;
-        });
+        let playerEntity = await this.eLoader.load("player", this.playContainer, new G_PIXI.Point(0,  200), this);
+        this.entities.player = playerEntity;
 
-
-        let loadEnemies = this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90), this).then((v)=>{
-            this.entities.enemies.push(v);
-        });
+        this.boardTree = new BoardTree(playerEntity, this.playContainer, this.eLoader, 1024*4, 1024*4, 256);
+        for (let i = 0; i < 10000; ++i) {
+            this.boardTree.addEntity("enemy_basic",
+                Math.ceil(Math.random() * 1024 * 4 - 1),
+                Math.ceil(Math.random() * 1024 * 4 - 1))
+        }
 
         // Set a period of resetting the enemy
-        setInterval(() => {
-            if (this.entities.enemies.length == 1) {
-                this.entities.enemies[0].teardown();
-            }
-            this.entities.enemies = [];
-            this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90), this).then((v) => {
-                this.entities.enemies.push(v);
-            })
-        }, 3000);
-
-        return Promise.all([loadPlayer, loadEnemies]).then(() => {
-            this.boardTree = new BoardTree(this.entities.player, this.playContainer, 768, 768);
-            this.boardTree.addEnemy(this.entities.enemies[0], 10, 10);
-        });
+        // setInterval(() => {
+            // if (this.entities.enemies.length == 1) {
+                // this.entities.enemies[0].teardown();
+            // }
+            // this.entities.enemies = [];
+            // this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90)).then((v) => {
+                // this.entities.enemies.push(v);
+            // })
+        // }, 3000);
     }
 
     update(delta) {
-<<<<<<< HEAD
-        this.elapsed += delta;
-        this.entities.player.update(delta);
-        this.entities.enemies.forEach((enemy)=>{
-            enemy.update(this.elapsed);
-        });
-
         this.entities.bullets.forEach((bullet, idx, bullets)=>{
             bullet.update(delta);
             // destroy bullet if off screen
@@ -198,9 +200,7 @@ class Board {
                 bullet.teardown();
             }
         });
-=======
         this.boardTree.update(delta);
->>>>>>> e80a3e7 (Add working snapshot)
     }
 
     async teardown() {

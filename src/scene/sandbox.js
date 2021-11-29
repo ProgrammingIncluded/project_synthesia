@@ -19,7 +19,7 @@ class SandboxScene extends Scene {
         });
 
         this.board = new Board(this.eLoader, this.playscreen.playspace, "");
-        await this.board.load();
+        this.board.load();
 
         this.bgm = new this.howl({
             src: ["assets/audio/peace_1.mp3"],
