@@ -34,7 +34,6 @@ class Bullet extends Entity {
     // Engine level API
     update(delta) {
         this.elapsed += delta;
-        // NESW movement
         let posBuf = this.movement(undefined, this.container.position, undefined, undefined, undefined);
         this.container.position = posBuf;
     }
