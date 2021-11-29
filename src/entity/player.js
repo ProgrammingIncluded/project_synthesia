@@ -28,7 +28,7 @@ class Player extends Entity  {
         if (elapsed < this.shootFreq) {
             return;
         }
-        this.board.eLoader.load("bullet", this.board.playContainer, this.container.position, this.maxSpeed, this.container.rotation).then((b)=>{
+        this.board.eLoader.load("bullet", this.board.playContainer, this.container.position, this.maxSpeed, this.container.rotation, true).then((b)=>{
             this.board.entities.bullets.push(b);
         });
         this.shootfx.play();

@@ -32,7 +32,7 @@ class Board {
         });
 
 
-        let loadEnemies = this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90)).then((v)=>{
+        let loadEnemies = this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90), this).then((v)=>{
             this.entities.enemies.push(v);
         });
 
@@ -41,7 +41,7 @@ class Board {
                 this.entities.enemies[0].teardown();
             }
             this.entities.enemies = [];
-            this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90)).then((v) => {
+            this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90), this).then((v) => {
                 this.entities.enemies.push(v);
             })
         }, 3000);

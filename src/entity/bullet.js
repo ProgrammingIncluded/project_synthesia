@@ -5,7 +5,7 @@ import { G_LOGGER } from "../logger.js";
 
 class Bullet extends Entity {
 
-    constructor(maxSpeed, rotation, origin) {
+    constructor() {
         super(bulletBlueprint);
         this.spriteName = "bullet.png";
     }
@@ -21,10 +21,14 @@ class Bullet extends Entity {
         return sprite;
     }
 
-    load(maxSpeed, rotation) {
+    load(maxSpeed, rotation, friendly) {
         this.maxSpeed = maxSpeed ?? 5;
         this.container.rotation = rotation - Math.PI/2 ?? 0;
         this._sprite.rotation -= Math.PI/2;
+        this.friendly = friendly;
+        if(friendly){
+            this._sprite.tint = 0x00FAFA;
+        }
     }
 
     // Engine level API
