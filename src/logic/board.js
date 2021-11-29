@@ -71,6 +71,7 @@ class BoardTree {
         for (let con of containers) {
             con.renderable = true;
             this._renderedContainers.push(con);
+            G_LOGGER.log(con.children.length);
             for (let child of con.children) {
                 child.entity.update(delta);
             }
@@ -135,12 +136,12 @@ class BoardTree {
         return fetchedContainerResults;
     }
 
-    async addEntity(entityName, x, y) {
-        assert(x < self.sizeX, "Entity placed farther than gamespace");
-        assert(y < self.sizeY, "Entity placed farther than gamespace");
+    async addEntity(entityName, x, y, ...varArgs) {
+        assert(x < this.sizeX, "Entity placed farther than gamespace");
+        assert(y < this.sizeY, "Entity placed farther than gamespace");
 
         let container = this.getContainer(x, y);
-        return this.eLoader.load(entityName, container, new G_PIXI.Point(x, y));
+        return this.eLoader.load(entityName, container, new G_PIXI.Point(x, y), this, ...varArgs);
     }
 }
 
@@ -171,11 +172,11 @@ class Board {
         let playerEntity = await this.eLoader.load("player", this.playContainer, new G_PIXI.Point(0,  200), this);
         this.entities.player = playerEntity;
 
-        this.boardTree = new BoardTree(playerEntity, this.playContainer, this.eLoader, 1024*4, 1024*4, 256);
-        for (let i = 0; i < 10000; ++i) {
+        this.boardTree = new BoardTree(playerEntity, this.playContainer, this.eLoader, 512, 512, 256);
+        for (let i = 0; i < 1000; ++i) {
             this.boardTree.addEntity("enemy_basic",
-                Math.ceil(Math.random() * 1024 * 4 - 1),
-                Math.ceil(Math.random() * 1024 * 4 - 1))
+                Math.ceil(Math.random() * 512),
+                Math.ceil(Math.random() * 512))
         }
 
         // Set a period of resetting the enemy
@@ -191,15 +192,6 @@ class Board {
     }
 
     update(delta) {
-        this.entities.bullets.forEach((bullet, idx, bullets)=>{
-            bullet.update(delta);
-            // destroy bullet if off screen
-            let bpos = bullet.container.position;
-            if(bpos.x < 0 || bpos.x > this.playAreaDim.width || bpos.y < 0 || bpos.y > this.playAreaDim.height) {
-                bullets.splice(idx, 1);
-                bullet.teardown();
-            }
-        });
         this.boardTree.update(delta);
     }
 

@@ -21,7 +21,17 @@ class Player extends Entity  {
         window.addEventListener('keyup', this.onKeyUp.bind(this));
 
         // set during load
-        this.board = undefined;
+        this.boardTree = undefined;
+    }
+
+    fireBullet() {
+        this.boardTree.addEntity(
+            "bullet",
+            this.position.x,
+            this.position.y,
+            this.maxSpeed,
+            this.container.rotation + Math.PI, false
+        );
     }
 
     attack(elapsed, curPos, player, enemies, space) {

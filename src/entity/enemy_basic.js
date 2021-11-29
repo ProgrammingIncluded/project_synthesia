@@ -14,16 +14,27 @@ class EnemyBasic extends Entity  {
         this.lastAttacked = 0;
 
         this.elapsed = 0;
+        // set during load
+        this.boardTree = undefined;
+    }
+
+    fireBullet() {
+        this.boardTree.addEntity(
+            "bullet",
+            this.position.x,
+            this.position.y,
+            this.maxSpeed,
+            this.container.rotation + Math.PI, false
+        );
     }
 
     attack(elapsed, curPos, player, enemies, space) {
         if (elapsed - this.lastAttacked < this.shootFreq) {
             return;
         }
+
         // simple, linear bullet fire
-        this.board.eLoader.load("bullet", this.board.playContainer, this.container.position, this.maxSpeed, this.container.rotation + Math.PI, false).then((b)=>{
-            this.board.entities.bullets.push(b);
-        });
+        this.fireBullet();
         this.lastAttacked = elapsed; // reset counter if we fired
     }
 
@@ -42,7 +53,8 @@ class EnemyBasic extends Entity  {
     }
 
     // Engine level API
-    load(board) {
+    load(boardTree) {
+        this.boardTree = boardTree;
         // set some interactive properties
         this.container.interactive = true;
         this.container.buttonMode = true;
@@ -51,8 +63,6 @@ class EnemyBasic extends Entity  {
             this.eLoader.mutate(this);
             G_EDITOR.displaySafe(this.movement.toString());
         });
-
-        this.board = board;
     }
 
     update(delta) {
