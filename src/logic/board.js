@@ -71,7 +71,6 @@ class BoardTree {
         for (let con of containers) {
             con.renderable = true;
             this._renderedContainers.push(con);
-            G_LOGGER.log(con.children.length);
             for (let child of con.children) {
                 child.entity.update(delta);
             }
