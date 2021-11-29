@@ -1,6 +1,6 @@
 import { Entity } from "./entity.js";
 import { playerBlueprint } from "./blueprints.js";
-import { G_PIXI_APP } from "../bootstrap.js";
+import { G_PIXI_APP, G_HOWL } from "../bootstrap.js";
 import { G_LOGGER } from "../logger.js";
 import { Bullet } from "./bullet.js";
 
@@ -31,6 +31,7 @@ class Player extends Entity  {
         this.board.eLoader.load("bullet", this.board.playContainer, this.container.position, this.maxSpeed, this.container.rotation).then((b)=>{
             this.board.entities.bullets.push(b);
         });
+        this.shootfx.play();
         this.elapsed = 0; // reset counter if we fired
     }
 
@@ -59,6 +60,11 @@ class Player extends Entity  {
     // Engine level API
     load(board) {
         this.board = board;
+        this.howl = G_HOWL;
+        this.shootfx = new this.howl({
+            src: ["assets/audio/effects/Moonshot.Sfx.Graze.wav"],
+            loop: false
+        });
     }
 
     update(delta) {
