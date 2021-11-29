@@ -16,6 +16,8 @@ class Player extends Entity  {
         this.vx = 0, this.vy = 0;
         this.dirX = 0, this.dirY = 0;
         this.keysPressed = {"left": false, "right": false, "up": false, "down": false, "space": false};
+        this.collidable = true;
+        this.collideLayer = 1;
 
         window.addEventListener('keydown', this.onKeyPress.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));
@@ -61,6 +63,10 @@ class Player extends Entity  {
             )
         );
         return new this.helpers.Pixi.Point(newX, newY);
+    }
+
+    onHit(otherEntity) {
+        this.damage();
     }
 
     render(elapsed, sprite) {

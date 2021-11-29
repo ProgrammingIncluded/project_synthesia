@@ -75,6 +75,8 @@ class BoardTree {
                 child.entity.update(delta);
             }
         }
+
+        this.calculateCollision(containers);
     }
 
     getContainer(x, y) {
@@ -87,6 +89,59 @@ class BoardTree {
         let containingChunkY = Math.floor(y / this.chunkSize) * this.chunkSize;
 
         return this._containerLookup[[containingChunkX, containingChunkY]];
+    }
+
+    calculateCollision(containers) {
+        let allChildren = {};
+        // Add the player
+        if (this.playerEntity.collidable) {
+            allChildren[this.playerEntity.collideLayer] = [this.playerEntity.container];
+        }
+
+        // Only observe collidables
+        // Sort by each collidable layer
+        for (const cont of containers) {
+            for (const child of cont.children) {
+                let entity = child.entity;
+                let layer = entity.collideLayer;
+                if (entity.collidable) {
+                    if (!(layer in allChildren)) {
+                        allChildren[layer] = [child]
+                    }
+                    else {
+                        allChildren[layer].push(child);
+                    }
+                }
+            }
+        }
+
+        Object.entries(allChildren).forEach((values, idx) => {
+            let layer = values[0];
+            let layerChildren = values[1];
+
+            // Get all the other children
+            let allOtherChildren = Object.entries(allChildren)
+                                    .slice(idx + 1)
+                                    .reduce((acc, curVal) => acc.concat(curVal[1]), []);
+
+            layerChildren.forEach((container, idx) => {
+                allOtherChildren.forEach((otherContainer, idx) => {
+                    // TODO: can be faster with cache
+                    const bounds1 = container.entity.container.getBounds();
+                    const bounds2 = otherContainer.entity.container.getBounds();
+                    let onHit = (bounds1.x < bounds2.x + bounds2.width
+                                && bounds1.x + bounds1.width > bounds2.x
+                                && bounds1.y < bounds2.y + bounds2.height
+                                && bounds1.y + bounds1.height > bounds2.y);
+
+                    if (onHit) {
+                        container.entity.onHit(otherContainer.entity);
+                        otherContainer.entity.onHit(container.entity);
+                    }
+                });
+            });
+        });
+
     }
 
     // Get all active containers that should be updated
@@ -174,10 +229,10 @@ class Board {
         let boardSize = 1024 * 4;
         let chunkSize = 256;
         this.boardTree = new BoardTree(playerEntity, this.playContainer, this.eLoader, boardSize, boardSize, chunkSize);
-        for (let i = 0; i < 1000; ++i) {
+        for (let i = 0; i < 1; ++i) {
             this.boardTree.addEntity("enemy_basic",
-                Math.floor(Math.random() * boardSize),
-                Math.floor(Math.random() * boardSize))
+                Math.floor(Math.random()),
+                Math.floor(Math.random()))
         }
 
         // Set a period of resetting the enemy

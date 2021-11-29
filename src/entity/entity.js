@@ -29,6 +29,8 @@ class Entity {
 
         // Engine level objects
         this.container = new G_PIXI.Container();
+        this.collidable = false;
+        this.collideLayer = 0;
         // Useful reference for logic and other custom classes.
         this.container.entity = this;
         this._sprite = undefined;

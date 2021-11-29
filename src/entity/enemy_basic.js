@@ -12,6 +12,8 @@ class EnemyBasic extends Entity  {
         this.preStates["movement"]["maxVelocity"] = 10.0;
         this.shootFreq = 50;
         this.lastAttacked = 0;
+        this.collidable = true;
+        this.collideLayer = 2;
 
         this.elapsed = 0;
         // set during load
@@ -46,6 +48,10 @@ class EnemyBasic extends Entity  {
 
     render(elapsed, sprite) {
         return sprite;
+    }
+
+    onHit(otherEntity) {
+        this.damage();
     }
 
     damage() {
