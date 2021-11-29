@@ -51,50 +51,25 @@ EDITOR.getSession().setMode("ace/mode/javascript");
 EDITOR.setTheme("ace/theme/monokai");
 
 // Load custom fonts for the game
-import * as WebFont from "webfontloader";
-
 let FONTNAMES = {
     dialogue: "M PLUS 1 Code"
 };
 
-let BITMAP_FONTS = {};
-async function loadFonts() {
-    return new Promise((resolve, reject) => {
-        WebFont.load({
-            google: {
-                families: Object.values(FONTNAMES)
-            },
-            active: (e) => {
-                G_LOGGER.debug("Fonts have been loaded.");
-                G_LOGGER.debug(e);
-
-                // Compile bitmap fonts
-                BITMAP_FONTS = {
-                    "dialogue": G_PIXI.BitmapFont.from("dialogue", {
-                        fontFamily: FONTNAMES.dialogue, // TODO: use local fonts
-                        fontSize: 16,
-                        strokeThickness: 2,
-                        fill: "white",
-                        lineHeight: 20
-                    }, {
-                        chars: G_PIXI.BitmapFont.ASCII,
-                        resolution: 2,
-                    })
-                };
-
-                resolve();
-            },
-            inactive: (e) => {
-                G_LOGGER.error("Unable to download fonts. Are you connected to the internet?")
-                reject(e);
-            }
-        });
-    });
-}
+let BITMAP_FONTS = {
+    "dialogue": G_PIXI.BitmapFont.from("dialogue", {
+        fontFamily: FONTNAMES.dialogue, // TODO: use local fonts
+        fontSize: 16,
+        strokeThickness: 2,
+        fill: "white",
+        lineHeight: 20
+    }, {
+        chars: G_PIXI.BitmapFont.ASCII,
+        resolution: 2,
+    })
+};
 
 async function bootstrap() {
     return Promise.all([
-        loadFonts(),
         setupSize()
     ]);
 }
