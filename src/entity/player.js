@@ -32,7 +32,7 @@ class Player extends Entity  {
             this.position.x,
             this.position.y,
             this.maxSpeed,
-            this.container.rotation + Math.PI, false
+            this.container.rotation, false
         );
     }
 
@@ -40,9 +40,7 @@ class Player extends Entity  {
         if (elapsed < this.shootFreq) {
             return;
         }
-        this.board.eLoader.load("bullet", this.board.playContainer, this.container.position, this.maxSpeed, this.container.rotation, true).then((b)=>{
-            this.board.entities.bullets.push(b);
-        });
+        this.fireBullet();
         this.shootfx.play();
         this.elapsed = 0; // reset counter if we fired
     }
