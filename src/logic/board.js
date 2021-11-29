@@ -80,13 +80,15 @@ class BoardTree {
     }
 
     getContainer(x, y) {
-        // Clip the coordinates to nearest 4 containers by looking at the containing container
-        // and it's quadrants
         assert(x !== undefined, "Invalid coordinates given");
         assert(y !== undefined, "Invalid coordinates given");
 
         let containingChunkX = Math.floor(x / this.chunkSize) * this.chunkSize;
         let containingChunkY = Math.floor(y / this.chunkSize) * this.chunkSize;
+
+        // Clip to within board game size, possible with positive values
+        containingChunkX = Math.min(containingChunkX, this.sizeX - this.chunkSize);
+        containingChunkY = Math.min(containingChunkY, this.sizeY - this.chunkSize);
 
         return this._containerLookup[[containingChunkX, containingChunkY]];
     }
@@ -116,7 +118,6 @@ class BoardTree {
         }
 
         Object.entries(allChildren).forEach((values, idx) => {
-            let layer = values[0];
             let layerChildren = values[1];
 
             // Get all the other children
