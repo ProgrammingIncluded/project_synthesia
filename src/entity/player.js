@@ -1,6 +1,6 @@
 import { Entity } from "./entity.js";
 import { playerBlueprint } from "./blueprints.js";
-import { G_PIXI_APP, G_HOWL } from "../bootstrap.js";
+import { G_PIXI, G_PIXI_APP, G_HOWL } from "../bootstrap.js";
 import { G_LOGGER } from "../logger.js";
 import { Bullet } from "./bullet.js";
 
@@ -16,6 +16,8 @@ class Player extends Entity  {
         this.vx = 0, this.vy = 0;
         this.dirX = 0, this.dirY = 0;
         this.keysPressed = {"left": false, "right": false, "up": false, "down": false, "space": false};
+        this.collidable = true;
+        this.collideLayer = 1;
 
         window.addEventListener('keydown', this.onKeyPress.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));
@@ -24,13 +26,15 @@ class Player extends Entity  {
         this.board = undefined;
     }
 
+    fireBullet() {
+        this.board.fireGlobalBullet(this.maxSpeed, this.container);
+    }
+
     attack(elapsed, curPos, player, enemies, space) {
         if (elapsed < this.shootFreq) {
             return;
         }
-        this.board.eLoader.load("bullet", this.board.playContainer, this.container.position, this.maxSpeed, this.container.rotation, true).then((b)=>{
-            this.board.entities.bullets.push(b);
-        });
+        this.fireBullet();
         this.shootfx.play();
         this.elapsed = 0; // reset counter if we fired
     }
@@ -51,6 +55,10 @@ class Player extends Entity  {
             )
         );
         return new this.helpers.Pixi.Point(newX, newY);
+    }
+
+    onHit(otherEntity) {
+        this.damage();
     }
 
     render(elapsed, sprite) {

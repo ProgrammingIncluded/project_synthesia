@@ -12,16 +12,31 @@ class EnemyBasic extends Entity  {
         this.preStates["movement"]["maxVelocity"] = 10.0;
         this.shootFreq = 50;
         this.lastAttacked = 0;
+        this.collidable = true;
+        this.collideLayer = 2;
+
+        this.elapsed = 0;
+        // set during load
+        this.boardTree = undefined;
+    }
+
+    fireBullet() {
+        this.boardTree.addEntity(
+            "bullet",
+            this.position.x,
+            this.position.y,
+            this.maxSpeed,
+            this.container.rotation + Math.PI, false
+        );
     }
 
     attack(elapsed, curPos, player, enemies, space) {
         if (elapsed - this.lastAttacked < this.shootFreq) {
             return;
         }
+
         // simple, linear bullet fire
-        this.board.eLoader.load("bullet", this.board.playContainer, this.container.position, this.maxSpeed, this.container.rotation + Math.PI, false).then((b)=>{
-            this.board.entities.bullets.push(b);
-        });
+        this.fireBullet();
         this.lastAttacked = elapsed; // reset counter if we fired
     }
 
@@ -35,12 +50,17 @@ class EnemyBasic extends Entity  {
         return sprite;
     }
 
+    onHit(otherEntity) {
+        this.damage();
+    }
+
     damage() {
         G_LOGGER.debug("c r i t i c a l  e r r o r");
     }
 
     // Engine level API
-    load(board) {
+    load(boardTree) {
+        this.boardTree = boardTree;
         // set some interactive properties
         this.container.interactive = true;
         this.container.buttonMode = true;
@@ -49,14 +69,13 @@ class EnemyBasic extends Entity  {
             this.eLoader.mutate(this);
             G_EDITOR.displaySafe(this.movement.toString());
         });
-
-        this.board = board;
     }
 
-    update(elapsed) {
-        let posBuf = this.movement(elapsed, this.position, undefined, undefined, undefined);
+    update(delta) {
+        this.elapsed += delta;
+        let posBuf = this.movement(this.elapsed, this.position, undefined, undefined, undefined);
         this.position = posBuf;
-        this.attack(elapsed, this.position, undefined, undefined, undefined);
+        this.attack(this.elapsed, this.position, undefined, undefined, undefined);
     }
 }
 
