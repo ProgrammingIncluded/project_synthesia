@@ -26,6 +26,7 @@ class Entity {
             loop: false,
             animationSpeed: 1
         };
+        this.immovable = false;
 
         // Engine level objects
         this.container = new G_PIXI.Container();

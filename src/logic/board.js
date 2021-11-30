@@ -249,6 +249,8 @@ class Board {
                 Math.floor(Math.random()))
         }
 
+        this.boardTree.addEntity("wall", 100, 100);
+
         // Set a period of resetting the enemy
         // setInterval(() => {
             // if (this.entities.enemies.length == 1) {

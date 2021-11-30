@@ -14,6 +14,7 @@ class EnemyBasic extends Entity  {
         this.lastAttacked = 0;
         this.collidable = true;
         this.collideLayer = 2;
+        this.prevPosition = null;
 
         this.elapsed = 0;
         // set during load
@@ -73,6 +74,7 @@ class EnemyBasic extends Entity  {
     update(delta) {
         this.elapsed += delta;
         let posBuf = this.movement(this.elapsed, this.position, undefined, undefined, undefined);
+        this.prevPosition = this.position;
         this.position = posBuf;
         this.attack(this.elapsed, this.position, undefined, undefined, undefined);
     }

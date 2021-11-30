@@ -18,6 +18,7 @@ class Player extends Entity  {
         this.keysPressed = {"left": false, "right": false, "up": false, "down": false, "space": false};
         this.collidable = true;
         this.collideLayer = 1;
+        this.prevPosition = null;
 
         window.addEventListener('keydown', this.onKeyPress.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));
@@ -58,7 +59,9 @@ class Player extends Entity  {
     }
 
     onHit(otherEntity) {
-        this.damage();
+        if (otherEntity.immovable) {
+            this.position = this.prevPosition;
+        }
     }
 
     render(elapsed, sprite) {
@@ -83,6 +86,7 @@ class Player extends Entity  {
         this.elapsed += delta;
         // NESW movement
         let posBuf = this.movement(undefined, this.container.position, undefined, undefined, undefined);
+        this.prevPosition = new G_PIXI.Point(this.container.position.x, this.container.position.y);
         this.container.position = posBuf;
         // Rotate towards mouse location
         // Convert mouse target point to game field coordinate system

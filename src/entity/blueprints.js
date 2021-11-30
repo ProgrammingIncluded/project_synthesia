@@ -62,6 +62,15 @@ class HackingBlueprint extends Blueprint {
     }
 }
 
+class CollidableBlueprint extends Blueprint {
+    constructor() {
+        super();
+        this.name = "onHit";
+        this.constraints["onHit"] = [];
+        this.preStates["onHit"] = "";
+    }
+}
+
 function blueFactory(blueprints) {
     if (blueprints.length == 0) {
         G_LOGGER.error("no blue prints specified for factory");
@@ -82,23 +91,29 @@ function blueFactory(blueprints) {
 let enemyBlueprint = blueFactory([
                                   AttackBlueprint,
                                   MovementBlueprint,
-                                  RenderBlueprint
+                                  RenderBlueprint,
+                                  CollidableBlueprint
                                 ]);
 
 let playerBlueprint = blueFactory([
                                   AttackBlueprint,
                                   MovementBlueprint,
                                   RenderBlueprint,
-                                  HackingBlueprint
+                                  HackingBlueprint,
+                                  CollidableBlueprint
                                 ]);
 
 let bulletBlueprint = blueFactory([
                                   MovementBlueprint,
-                                  RenderBlueprint
+                                  RenderBlueprint,
+                                  CollidableBlueprint
                                 ]);
+
+let wallBlueprint = blueFactory([CollidableBlueprint, RenderBlueprint]);
 
 export {
     enemyBlueprint,
     playerBlueprint,
-    bulletBlueprint
+    bulletBlueprint,
+    wallBlueprint
 }

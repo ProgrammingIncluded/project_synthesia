@@ -1,6 +1,5 @@
 import { Entity } from "./entity.js";
 import { bulletBlueprint } from "./blueprints.js";
-import { BITMAP_FONTS, G_PIXI_APP } from "../bootstrap.js";
 import { G_LOGGER } from "../logger.js";
 
 class Bullet extends Entity {
