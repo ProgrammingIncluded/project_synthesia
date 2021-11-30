@@ -20,18 +20,27 @@ class SandboxScene extends Scene {
             this.playscreen.ui.textbox.play();
         });
 
-        this.hud = new  HUD(this.rootNode, this.eLoader);
+        this.hud = new HUD(this.rootNode, this.eLoader);
         this.hud.load();
         this.hud.sphereContainer.zIndex = 4;
 
         this.board = new Board(this.eLoader, this.playscreen.playspace, "");
         this.board.load();
 
-        this.bgm = new this.howl({
-            src: ["assets/audio/peace_1.mp3"],
+        this.bgmLoop = new this.howl({
+            src: ["assets/audio/bgm/bgm_stage_intro.wav"],
             loop: true
         });
-        //this.bgm.play();
+
+        this.bgmIntro = new this.howl({
+            src: ["assets/audio/bgm/bgm_stage_intro.wav"],
+            loop: false,
+            onend: () => {
+                this.bgmLoop.play();
+            }
+        });
+        this.bgmIntro.play();
+
         return this;
     }
 
@@ -40,6 +49,10 @@ class SandboxScene extends Scene {
     }
 
     async teardown() {
+        this.bgmLoop.unload();
+        if (this.bgmIntro.playing()) {
+            this.bgmIntro.unload();
+        }
         await this.board.teardown();
     }
 
