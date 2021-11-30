@@ -15,6 +15,10 @@ const ENTITIES = {
     "textbox": require("./entity/ui/textbox.js"),
     "editor": require("./entity/ui/editor.js"),
     "profile": require("./entity/ui/profile.js"),
+    "background": require("./entity/ui/background.js"),
+    "line_one": require("./entity/ui/line_one.js"),
+    "line_two": require("./entity/ui/line_two.js"),
+    "hacksphere": require("./entity/ui/hacksphere.js"),
     "title": require("./entity/ui/title.js")
 }
 

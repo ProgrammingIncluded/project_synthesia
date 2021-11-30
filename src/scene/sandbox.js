@@ -3,6 +3,7 @@ import { Playscreen } from "../logic/playscreen.js";
 import { Board } from "../logic/board.js";
 import { G_LOGGER, assert } from "../logger.js";
 import { G_EDITOR } from "../logic/editor.js";
+import { HUD } from "../logic/hud.js";
 
 class SandboxScene extends Scene {
     async load() {
@@ -10,6 +11,7 @@ class SandboxScene extends Scene {
         G_EDITOR.unlock();
         G_EDITOR.randomEmote("happy");
 
+        this.rootNode.sortableChildren = true;
         this.playscreen = new Playscreen(this.rootNode, this.eLoader);
         this.playscreen.loadUI().then(()=>{
             this.playscreen.ui.textbox.sprite.onComplete = () => {
@@ -17,6 +19,10 @@ class SandboxScene extends Scene {
             };
             this.playscreen.ui.textbox.play();
         });
+
+        this.hud = new  HUD(this.rootNode, this.eLoader);
+        this.hud.load();
+        this.hud.sphereContainer.zIndex = 4;
 
         this.board = new Board(this.eLoader, this.playscreen.playspace, "");
         this.board.load();

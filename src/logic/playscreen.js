@@ -15,23 +15,32 @@ class Playscreen {
         // Only set the default position relative to UI
         // The Board class will modify the width and height appropriately
         this.playspace.position = new G_PIXI.Point(0, 180);
+        this.playspace.zIndex = 1;
         this.rootNode.addChild(this.playspace);
+        this.rootNode.sortableChildren = true;
 
         this.ui = {
-            editor: null,
+            // editor: null,
             textbox: null,
-            profile: null
+            profile: null,
+            background: null
         }
 
         this.posUI = {
-            editor: new G_PIXI.Point(900, 180),
-            textbox: new G_PIXI.Point(180 / 4 * 3, 0),
-            profile: new G_PIXI.Point(0, 0)
+            // editor: new G_PIXI.Point(900, 180),
+            textbox: new G_PIXI.Point(180 / 4 * 3 - 30, -7),
+            profile: new G_PIXI.Point(5, 0),
+            background: new G_PIXI.Point(0, 0)
         }
 
         this.dimsUI = {
-            profile: {width: 180, height: 180},
-            editor: {width: 360, height: 500}
+            profile: {width: 160, height: 160},
+            editor: {width: 360, height: 500},
+            background: {width: 1280, height: 720}
+        }
+
+        this.zIndex = {
+            background: 3
         }
 
     }
@@ -39,26 +48,26 @@ class Playscreen {
     // Returns an array of all the UI elements
     async loadUI() {
         // Load all values
-        let promises = [];
         for (const uin of Object.keys(this.ui)) {
-            let promise = this.eLoader.load(uin, this.rootNode, this.posUI[uin]).then((entity) => {
+            await this.eLoader.load(uin, this.rootNode, this.posUI[uin]).then((entity) => {
                 entity.sprite.anchor.set(0);
                 if (uin in this.dimsUI) {
                     const {width, height} = this.dimsUI[uin];
                     entity.sprite.width = width;
                     entity.sprite.height = height;
                 }
+                if (uin in this.zIndex) {
+                    entity.container.zIndex = this.zIndex[uin];
+                }
+                else {
+                    entity.container.zIndex = 4;
+                }
                 this.ui[uin] = entity;
                 return entity;
             });
 
-            promises.push(promise);
         }
-
-        return Promise.all(promises);
     }
-
-    /* Helper shortcuts */
 }
 
 export {

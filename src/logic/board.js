@@ -237,11 +237,11 @@ class Board {
         // TODO:
         // 1. Add player sprite
         // 2. Add alternate sprites (e.g. taking damage)
-        let playerEntity = await this.eLoader.load("player", this.playContainer, new G_PIXI.Point(0,  200), this);
+        let playerEntity = await this.eLoader.load("player", this.playContainer, new G_PIXI.Point(0, 200), this);
         this.entities.player = playerEntity;
 
-        let boardSize = 1024 * 4;
-        let chunkSize = 256;
+        let boardSize = 1024 * 2;
+        let chunkSize = 512;
         this.boardTree = new BoardTree(playerEntity, this.playContainer, this.eLoader, boardSize, boardSize, chunkSize);
         for (let i = 0; i < 1; ++i) {
             this.boardTree.addEntity("enemy_basic",

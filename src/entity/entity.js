@@ -287,9 +287,13 @@ class EntityManager {
         let hasAnimations = entity.spriteName.endsWith(".json");
         // Load the sprite into the engine and store the ptr
         let loader = G_PIXI.Loader.shared;
+        let resources = loader.resources;
+        if (loader.loading) {
+            loader = new G_PIXI.Loader();
+        }
+
         if (hasAnimations) {
             let jsonLoc = `assets/${entity.spriteName}`;
-            let resources = loader.resources;
             if (!loader.resources[jsonLoc]) {
                 loader = loader.add(jsonLoc);
                 resources = await new Promise((resolve, reject) => loader.load((loader, resources) => resolve(resources)));
@@ -309,10 +313,10 @@ class EntityManager {
                 entity.container.addChild(animationSprite);
             }
 
+            entity.eLoader = this;
             entity.load();
             entity.position = startingPosition;
             entity.parent = node;
-            entity.eLoader = this;
             node.addChild(entity.container);
             return entity;
         }
@@ -321,10 +325,10 @@ class EntityManager {
             entity.sprite.anchor.set(0.5); // Can't be called in entity constructor because sprite isn't loaded yet
             entity.position = startingPosition;
 
+            entity.eLoader = this;
             entity.load(...varArgs);
             entity.container.addChild(entity._sprite);
             entity.parent = node;
-            entity.eLoader = this;
             node.addChild(entity.container);
             return entity;
         }
