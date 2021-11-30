@@ -10,11 +10,21 @@ class TitleScene extends Scene {
         EDITOR.session.setValue('"psst, click on that start button..." \n - S');
 
         this.background = await this.eLoader.load("title", this.rootNode, new this.pixi.Point(0, 0));
-        this.bgm = new this.howl({
-            src: ["assets/audio/bgm/title.mp3"],
+
+        this.bgmLoop = new this.howl({
+            src: ["assets/audio/bgm/bgm_title_loop.wav"],
             loop: true
         });
-        this.bgm.play();
+
+        this.bgmIntro = new this.howl({
+            src: ["assets/audio/bgm/bgm_title_intro.wav"],
+            loop: false,
+            onend: () => {
+                this.bgmLoop.play();
+                this.bgmIntro.unload();
+            }
+        });
+        this.bgmIntro.play();
 
         // Button click logic
         // sounds
@@ -73,7 +83,10 @@ class TitleScene extends Scene {
 
     async teardown() {
         this.background.teardown();
-        this.bgm.unload();
+        this.bgmLoop.unload();
+        if (this.bgmIntro.playing()) {
+            this.bgmIntro.unload();
+        }
         this.buttonClickFX.unload();
     }
 
