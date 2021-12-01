@@ -12,8 +12,9 @@ class Player extends Entity  {
         this.elapsed = 0;
         this.spriteName = "temp_player.png";
         this.maxSpeed = 5;
-        this.health = 5;
-        this.shootFreq = 5;
+        this.health = 3;
+        this.dead = false;
+        this.shootFreq = 10;
         this.vx = 0, this.vy = 0;
         this.dirX = 0, this.dirY = 0;
         this.keysPressed = {"left": false, "right": false, "up": false, "down": false, "space": false};
@@ -29,7 +30,14 @@ class Player extends Entity  {
     }
 
     fireBullet() {
-        this.board.fireGlobalBullet(this.maxSpeed, this.container);
+        this.board.boardTree.addEntity(
+            "bullet",
+            this.position.x,
+            this.position.y,
+            this.maxSpeed,
+            this.container.rotation,
+            true
+        );
     }
 
     attack(elapsed, curPos, player, enemies, space) {
@@ -73,8 +81,17 @@ class Player extends Entity  {
     }
 
     damage() {
-        this.sprite.tint = 0xD91B43;
-        setTimeout(()=> {this.sprite.tint=0xFFFFFF;}, 100);
+        if (this.dead) {
+            return;
+        }
+        this.health--;
+        this.ouchfx.play();
+        G_LOGGER.log(this.health);
+        this.dead = this.health <= 0;
+        // on death, play big, dramatic sound. PICHUUUNNNN~
+        if (this.dead) {
+            this.deathrattle.play();
+        }
     }
 
     // Engine level API
@@ -85,12 +102,13 @@ class Player extends Entity  {
             src: ["assets/audio/effects/Moonshot.Sfx.Graze.wav"],
             loop: false
         });
-
-        // set some interactive properties
-        this.container.interactive = true;
-        this.container.buttonMode = true;
-        this.container.on("pointerdown", (event) => {
-            G_SELECT.select(this);
+        this.ouchfx = new this.howl({
+            src: ["assets/audio/effects/Moonshot.Sfx.Hit.Player.wav"],
+            loop: false
+        });
+        this.deathrattle = new this.howl({
+            src: ["assets/audio/effects/Moonshot.Sfx.Explosion.Player.Death.wav"],
+            loop: false
         });
     }
 

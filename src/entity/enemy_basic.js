@@ -2,6 +2,8 @@ import { Entity } from "./entity.js";
 import { enemyBlueprint } from "./blueprints.js";
 import { G_SELECT } from "../shared.js";
 import { G_LOGGER } from "../logger.js";
+import { G_EDITOR } from "../logic/editor.js";
+import { G_HOWL } from "../bootstrap.js"
 
 class EnemyBasic extends Entity  {
     constructor() {
@@ -15,7 +17,8 @@ class EnemyBasic extends Entity  {
         this.collidable = true;
         this.collideLayer = 2;
         this.prevPosition = null;
-
+        this.health = 2;
+        this.dead = false;
         this.elapsed = 0;
         // set during load
         this.boardTree = undefined;
@@ -27,8 +30,10 @@ class EnemyBasic extends Entity  {
             this.position.x,
             this.position.y,
             this.maxSpeed,
-            this.container.rotation + Math.PI, false
+            this.container.rotation + Math.PI,
+            false
         );
+        this.shootfx.play();
     }
 
     attack(elapsed, curPos, player, enemies, space) {
@@ -52,14 +57,24 @@ class EnemyBasic extends Entity  {
     }
 
     onHit(otherEntity) {
-        this.damage();
+        if(otherEntity.isBullet) {
+            this.damage();
+        }
     }
 
     damage() {
+        if (this.dead) {
+            return;
+        }
+
+        this.ouchfx.play();
+        this.health-=1;
+        this.dead = this.health <= 0;
     }
 
     // Engine level API
     load(boardTree) {
+        this.howl = G_HOWL;
         this.boardTree = boardTree;
         // set some interactive properties
         this.container.interactive = true;
@@ -67,6 +82,16 @@ class EnemyBasic extends Entity  {
 
         this.container.on("pointerdown", (event) => {
             G_SELECT.select(this);
+        });
+
+        this.shootfx = new this.howl({
+            src: ["assets/audio/effects/Moonshot.Sfx.Graze.wav"],
+            loop: false
+        });
+
+        this.ouchfx = new this.howl({
+            src: ["assets/audio/effects/Moonshot.Sfx.Hit.Enemy.Normal.wav"],
+            loop: false
         });
     }
 

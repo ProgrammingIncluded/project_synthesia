@@ -58,6 +58,11 @@ class BoardTree {
     // Public functions
     // Should be called every render loop
     update(delta) {
+        if(this.playerEntity.dead) {
+            // clean up the game
+            this.playerEntity.teardown();
+            return;
+        }
         this.playerEntity.update(delta);
         let containers = this.getActiveContainers(this.playerEntity.position.x, this.playerEntity.position.y);
 
@@ -160,7 +165,6 @@ class BoardTree {
                 }
             });
         });
-
     }
 
     // Get all active containers that should be updated
@@ -294,7 +298,7 @@ class Board {
             this.boardTree,
             maxSpeed,
             containerOrigin.rotation,
-            false
+            true
         ).then((bullet) =>{
             this.entities.playerBullets.push(bullet);
         });
