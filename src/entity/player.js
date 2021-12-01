@@ -13,8 +13,8 @@ class Player extends Entity  {
         this.spriteName = "temp_player.png";
         this.maxSpeed = 5;
         this.health = 3;
-        this.alive = true;
-        this.shootFreq = 5;
+        this.dead = false;
+        this.shootFreq = 10;
         this.vx = 0, this.vy = 0;
         this.dirX = 0, this.dirY = 0;
         this.keysPressed = {"left": false, "right": false, "up": false, "down": false, "space": false};
@@ -30,7 +30,14 @@ class Player extends Entity  {
     }
 
     fireBullet() {
-        this.board.fireGlobalBullet(this.maxSpeed, this.container);
+        this.board.boardTree.addEntity(
+            "bullet",
+            this.position.x,
+            this.position.y,
+            this.maxSpeed,
+            this.container.rotation,
+            true
+        );
     }
 
     attack(elapsed, curPos, player, enemies, space) {
@@ -74,14 +81,15 @@ class Player extends Entity  {
     }
 
     damage() {
-        if (!this.alive) {
+        if (this.dead) {
             return;
         }
         this.health--;
         this.ouchfx.play();
-        this.alive = this.health > 0;
+        G_LOGGER.log(this.health);
+        this.dead = this.health <= 0;
         // on death, play big, dramatic sound. PICHUUUNNNN~
-        if (!this.alive) {
+        if (this.dead) {
             this.deathrattle.play();
         }
     }

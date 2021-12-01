@@ -37,6 +37,7 @@ class Bullet extends Entity {
         this.friendly = friendly;
         if(friendly){
             this.sprite.tint = 0x00FAFA;
+            this.collideLayer = 1;
         }
     }
 

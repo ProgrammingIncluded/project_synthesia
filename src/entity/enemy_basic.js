@@ -18,7 +18,7 @@ class EnemyBasic extends Entity  {
         this.collideLayer = 2;
         this.prevPosition = null;
         this.health = 2;
-        this.alive = true;
+        this.dead = false;
         this.elapsed = 0;
         // set during load
         this.boardTree = undefined;
@@ -30,8 +30,10 @@ class EnemyBasic extends Entity  {
             this.position.x,
             this.position.y,
             this.maxSpeed,
-            this.container.rotation + Math.PI, false
+            this.container.rotation + Math.PI,
+            false
         );
+        this.shootfx.play();
     }
 
     attack(elapsed, curPos, player, enemies, space) {
@@ -55,16 +57,19 @@ class EnemyBasic extends Entity  {
     }
 
     onHit(otherEntity) {
-        this.damage();
+        if(otherEntity.isBullet) {
+            this.damage();
+        }
     }
 
     damage() {
-        if (!alive) {
+        if (this.dead) {
             return;
         }
+
         this.ouchfx.play();
         this.health-=1;
-        alive = this.health > 0;
+        this.dead = this.health <= 0;
     }
 
     // Engine level API
@@ -85,7 +90,7 @@ class EnemyBasic extends Entity  {
         });
 
         this.ouchfx = new this.howl({
-            src: ["assets/audio/effects/Moonshot.Sfx.Hit.Enemy.SoftImpact"],
+            src: ["assets/audio/effects/Moonshot.Sfx.Hit.Enemy.Normal.wav"],
             loop: false
         });
     }
