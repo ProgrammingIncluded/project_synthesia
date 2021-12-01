@@ -19,9 +19,9 @@ class Bullet extends Entity {
     }
 
     // by default, bullets just move in a straight line at a fixed speed.
-    movement(elapsed, curPos, player, enemies, space) {
-        let newX = curPos.x + this.maxSpeed * Math.cos(this.container.rotation);
-        let newY = curPos.y + this.maxSpeed * Math.sin(this.container.rotation);
+    movement(delta, curPos, player, enemies, space) {
+        let newX = curPos.x + this.maxSpeed * Math.cos(this.container.rotation) * delta;
+        let newY = curPos.y + this.maxSpeed * Math.sin(this.container.rotation) * delta;
         return new this.helpers.Pixi.Point(newX, newY);
     }
 
@@ -50,7 +50,7 @@ class Bullet extends Entity {
     // Engine level API
     update(delta) {
         this.elapsed += delta;
-        let bpos = this.movement(undefined, this.container.position, undefined, undefined, undefined);
+        let bpos = this.movement(delta, this.container.position, undefined, undefined, undefined);
         if(bpos.x < 0 || bpos.x > this.boardTree.sizeX || bpos.y < 0 || bpos.y > this.boardTree.sizeY) {
             this.teardown();
             return

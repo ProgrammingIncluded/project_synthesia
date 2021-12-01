@@ -10,6 +10,14 @@ class Editor {
         this.locked = false;
     }
 
+    onFocus(func) {
+        EDITOR.on("focus", func);
+    }
+
+    onBlur(func) {
+        EDITOR.on("blur", func);
+    }
+
     getValue() {
         return EDITOR.getValue();
     }

@@ -4,6 +4,7 @@ import {G_PIXI_APP, G_HOWL, G_PIXI} from "./bootstrap.js";
 // engine
 import {G_LOGGER} from "./logger.js";
 import {SCENES, VIRTUAL_WINDOW} from "./constants.js";
+import { G_EDITOR } from "./logic/editor.js";
 
 // STD
 const path = require("path");
@@ -43,12 +44,15 @@ class Game {
         G_PIXI_APP.renderer.on("resize", (width, height) => {
             this.resize(width, height);
         });
+
+        // gamespeed
+        this.gamespeed = 1;
     }
 
     //! Start the game
     async start() {
         this.app.ticker.add((delta) => {
-            this.currentScene.update(delta);
+            this.currentScene.update(delta * this.gamespeed);
         });
     }
 
@@ -72,6 +76,15 @@ class Game {
             this
         );
         this.currentScene = scene;
+
+        // Hook slowdown code
+        G_EDITOR.onFocus(() => {
+            this.gamespeed = 0.2;
+        });
+
+        G_EDITOR.onBlur(()=>{
+            this.gamespeed = 1;
+        })
 
         // Load scene, may time some time
         return await scene.load();
