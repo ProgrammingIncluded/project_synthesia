@@ -12,7 +12,7 @@ class Scene {
         this.howl = howl;
         this.eLoader = new EntityManager();
         this.game = game;
-
+        this.nextScenes = []; // add scenes left to right, top to bottom based on where winzones are in level encoding
         // Check to see if teardown await is required before next loading of scene
         this.teardownAwait = false;
     }

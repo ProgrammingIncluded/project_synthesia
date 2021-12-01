@@ -5,7 +5,8 @@ const BUILD_ASSET_FOLDER = "assets"
 // Otherwise require streaming and other abstracted fs.
 const SCENES = {
     "title": require("./scene/title.js"),
-    "sandbox": require("./scene/sandbox.js")
+    "sandbox": require("./scene/sandbox.js"),
+    "bossroom": require("./scene/bossroom.js")
 }
 
 const ENTITIES = {
@@ -20,6 +21,7 @@ const ENTITIES = {
     "line_two": require("./entity/ui/line_two.js"),
     "hacksphere": require("./entity/ui/hacksphere.js"),
     "title": require("./entity/ui/title.js"),
+    "winzone": require("./entity/winzone.js"),
     "hack_button": require("./entity/ui/hack.js"),
     "mutate_button": require("./entity/ui/bug.js"),
     "movement_button": require("./entity/ui/movement.js"),
@@ -27,7 +29,6 @@ const ENTITIES = {
     "wall": require("./entity/wall.js")
 }
 
-// Setup play field constant scaling
 // Set the game's playfield to support auto-scaling
 // Think of this as max design. Any lower and pixels get down sized
 // any higher and pixels get up-scaled.

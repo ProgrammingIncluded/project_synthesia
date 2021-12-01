@@ -369,7 +369,12 @@ class EntityManager {
             }
 
             entity.eLoader = this;
-            entity.load();
+            if (varArgs.length > 0) {
+                entity.load(...varArgs);
+            }
+            else {
+                entity.load();
+            }
             entity.position = startingPosition;
             entity.parent = node;
             node.addChild(entity.container);

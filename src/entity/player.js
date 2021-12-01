@@ -21,6 +21,7 @@ class Player extends Entity  {
         this.collidable = true;
         this.collideLayer = 1;
         this.prevPosition = null;
+        this.isPlayer = true; // hack for winzone detection
 
         window.addEventListener('keydown', this.onKeyPress.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));

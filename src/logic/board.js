@@ -29,6 +29,7 @@ class BoardTree {
 
         // the player is specially tracked because they are what makes the world update
         this.playerEntity = playerEntity;
+        this.stopUpdating = false;
 
         // Make sure size is always a multiple of chunksize
         assert(this.sizeX % chunkSize == 0, "Must be a multiple of chunk size.")
@@ -58,11 +59,10 @@ class BoardTree {
     // Public functions
     // Should be called every render loop
     update(delta) {
-        if(this.playerEntity.dead) {
-            // clean up the game
-            this.playerEntity.teardown();
+        if (this.stopUpdating) {
             return;
         }
+
         this.playerEntity.update(delta);
         let containers = this.getActiveContainers(this.playerEntity.position.x, this.playerEntity.position.y);
 
@@ -143,8 +143,16 @@ class BoardTree {
                         continue;
                     }
 
-                    const bounds1 = container.entity.container.getBounds();
-                    const bounds2 = otherContainer.entity.container.getBounds();
+                    let bounds1;
+                    let bounds2;
+                    try {
+                        bounds1 = container.entity.container.getBounds();
+                        bounds2 = otherContainer.entity.container.getBounds();
+                    }
+                    catch(e) {
+                        G_LOGGER.error(e);
+                        continue;
+                    }
                     let onHit = (bounds1.x < bounds2.x + bounds2.width
                                 && bounds1.x + bounds1.width > bounds2.x
                                 && bounds1.y < bounds2.y + bounds2.height
@@ -229,11 +237,19 @@ class BoardTree {
         let container = this.getContainer(x, y);
         return this.eLoader.load(entityName, container, new G_PIXI.Point(x % this.chunkSize, y % this.chunkSize), this, ...varArgs);
     }
+
+    teardown() {
+        Object.values(this._containerLookup).forEach((c) => {
+            c.destroy();
+        });
+        this.stopUpdating = true;
+    }
 }
 
 class Board {
-    // TODO: Level encoding
-    constructor(eLoader, playarea, levelEncoding, levelSize=1024*8, chunkSize=1024) {
+    constructor(eLoader, playarea, levelEncoding, currentScene, nextScenes, levelSize=1024*8, chunkSize=1024) {
+        console.log("board: ");
+        console.log(currentScene);
         this.eLoader = eLoader;
         this.playAreaDim = {height: 540, width: Math.floor(540 * (16.0 / 9))};
         this.playContainer = playarea;
@@ -250,13 +266,16 @@ class Board {
         }
 
         this.levelEncoding = levelEncoding;
+        this.currentScene = currentScene;
+        this.nextScenes = nextScenes;
     }
 
     getEncodingMap() {
         return {
             "*": "wall",
             "e": "enemy_basic",
-            "p": "player"
+            "p": "player",
+            "w": "winzone"
         }
     }
 
@@ -269,7 +288,20 @@ class Board {
                 if(value == undefined) {
                     continue;
                 }
-                boardTree.addEntity(value, x * spacing, y * spacing);
+                // set up which scenes can be loaded from here
+                else if(value === "winzone"){
+                    let scene = "";
+                    try{
+                        scene = this.nextScenes.shift();
+                    }
+                    catch{
+                        scene = "";
+                    }
+                    boardTree.addEntity(value, x * spacing, y * spacing, this.currentScene, scene);
+                }
+                else {
+                    boardTree.addEntity(value, x * spacing, y * spacing);
+                }
             }
         });
     }
@@ -337,13 +369,20 @@ class Board {
 
     async teardown() {
         for(let entity of Object.values(this.entities)) {
-            if (typeof(entity) === Array) {
-                entity.foreach((en) => { en.teardown(); });
+            if ("length" in entity) {
+                entity.forEach((en) => { en.teardown(); });
             }
             else {
-                entity.teardown();
+                try {
+                    entity.teardown();
+                }
+                catch(e) {
+                    G_LOGGER.error(e);
+                }
             }
         }
+
+        this.boardTree.teardown();
     }
 }
 
