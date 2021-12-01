@@ -23,14 +23,22 @@ class Playscreen {
             // editor: null,
             textbox: null,
             profile: null,
-            background: null
+            background: null,
+            hack_button: null,
+            mutate_button: null,
+            movement_button: null,
+            render_button: null
         }
 
         this.posUI = {
             // editor: new G_PIXI.Point(900, 180),
             textbox: new G_PIXI.Point(180 / 4 * 3 - 30, -7),
             profile: new G_PIXI.Point(5, 0),
-            background: new G_PIXI.Point(0, 0)
+            background: new G_PIXI.Point(0, 0),
+            hack_button: new G_PIXI.Point(1011, 160),
+            mutate_button: new G_PIXI.Point(1015, 400),
+            movement_button: new G_PIXI.Point(1015, 540),
+            render_button: new G_PIXI.Point(1015, 610)
         }
 
         this.dimsUI = {
@@ -48,8 +56,9 @@ class Playscreen {
     // Returns an array of all the UI elements
     async loadUI() {
         // Load all values
+        let loading = [];
         for (const uin of Object.keys(this.ui)) {
-            await this.eLoader.load(uin, this.rootNode, this.posUI[uin]).then((entity) => {
+            let promise = this.eLoader.load(uin, this.rootNode, this.posUI[uin]).then((entity) => {
                 entity.sprite.anchor.set(0);
                 if (uin in this.dimsUI) {
                     const {width, height} = this.dimsUI[uin];
@@ -65,8 +74,9 @@ class Playscreen {
                 this.ui[uin] = entity;
                 return entity;
             });
-
+            loading.push(promise);
         }
+        return Promise.all(loading);
     }
 }
 

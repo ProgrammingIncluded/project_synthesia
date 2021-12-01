@@ -16,6 +16,10 @@ class Wall extends Entity {
         this.boardTree = undefined;
     }
 
+    movement(elapsed, pos, player, enemies, space) {
+        return pos;
+    }
+
     render(elapsed, sprite) {
         return sprite;
     }
@@ -37,6 +41,7 @@ class Wall extends Entity {
     // Engine level API
     update(delta) {
         this.render(delta, this.sprite);
+        this.position = this.movement(delta, this.position, undefined, undefined, undefined);
     }
 
     teardown() {
