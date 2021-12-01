@@ -214,8 +214,17 @@ class BoardTree {
     }
 
     async addEntity(entityName, x, y, ...varArgs) {
-        assert(x < this.sizeX, "Entity placed farther than gamespace");
-        assert(y < this.sizeY, "Entity placed farther than gamespace");
+        // assert(x < this.sizeX, "Entity placed farther than gamespace");
+        // assert(y < this.sizeY, "Entity placed farther than gamespace");
+
+        if (x >= this.sizeX || y >= this.sizeY ) {
+            // Possible if mutation TPs movement very far
+            G_LOGGER.info(`Entity placed farther than gamespace: ${x}, ${y}`);
+
+            // Clip to nearest value
+            x = Math.min(x, self.sizeX - 1);
+            y = Math.min(y, self.sizeY - 1);
+        }
 
         let container = this.getContainer(x, y);
         return this.eLoader.load(entityName, container, new G_PIXI.Point(x % this.chunkSize, y % this.chunkSize), this, ...varArgs);

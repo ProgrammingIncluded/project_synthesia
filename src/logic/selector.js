@@ -32,6 +32,9 @@ class Selector {
             this.selectButton = button;
             this.selectButton.sprite.tint = 0x9B9A9A;
         }
+        if (this.selectedEntity.dead) {
+            G_EDITOR.displaySafe("// Enemy has died. Source code not available.")
+        }
         if (this.selectedFunction in this.selectedEntity) {
             G_EDITOR.displaySafe(this.selectedEntity[this.selectedFunction].toString());
         }
