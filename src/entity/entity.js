@@ -306,8 +306,21 @@ class EntityManager {
                 return eval(newCode);
             }.bind(entity);
 
-            // Test
-            context()(0.1, new G_PIXI.Point(2, 2), {}, {}, {});
+            // Basic validation test
+            if ("movement" == functionName) {
+                let resultOne = context()(0.2, new G_PIXI.Point(2, 2), {}, {}, {});
+                let result = context()(0.2, resultOne, {}, {}, {});
+                assert(result !== undefined, "Return cannot be undefined");
+                assert(result !== null, "Return cannot be null");
+                assert((resultOne.x - result.x)**2 < 100, "Slow down there cowboy. You move too fast.");
+                assert((resultOne.y - result.y)**2 < 100, "Slow down there cowboy. You move too fast.");
+            }
+            else {
+                let result = context()(0.1, new G_PIXI.Sprite.from("assets/sample.png"));
+                assert(result !== undefined, "Return cannot be undefined");
+                assert(result !== null, "Return cannot be null");
+                assert("tint" in result, "Return must be sprite type");
+            }
 
             // Required to bind context
             entity[functionName] = context();

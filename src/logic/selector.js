@@ -11,8 +11,14 @@ class Selector {
 
 
     injectCode(code) {
-        // Mutates current selection
+        if (this.selectedEntity === undefined) { return; }
         this.selectedEntity.eLoader.inject(this.selectedEntity, this.selectedFunction, code);
+        this.selectFunction(this.selectedFunction, this.selectButton);
+    }
+
+    mutateCode() {
+        if (this.selectedEntity === undefined) { return; }
+        this.selectedEntity.eLoader.mutate(this.selectedEntity, this.selectedFunction);
         this.selectFunction(this.selectedFunction, this.selectButton);
     }
 

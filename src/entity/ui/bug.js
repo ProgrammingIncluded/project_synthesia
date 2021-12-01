@@ -15,7 +15,7 @@ class BugButton extends Entity {
         this.container.buttonMode = true;
 
         this.container.on("pointerdown", (event) => {
-            G_SELECT.injectCode(G_EDITOR.getValue());
+            G_SELECT.mutateCode();
         });
     }
 }
