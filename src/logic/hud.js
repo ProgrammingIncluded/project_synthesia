@@ -1,9 +1,10 @@
 import { G_PIXI } from "../bootstrap.js";
 
 class HUD {
-    constructor(root, eLoader) {
+    constructor(root, eLoader, board) {
         this.eLoader = eLoader;
         this.rootNode = root;
+        this.board = board;
 
         this.sphereContainer = new G_PIXI.Container();
         this.healthSpheres = [];
@@ -11,6 +12,20 @@ class HUD {
         this.hackSpheresLoc = new G_PIXI.Point(562, 30);
         this.healthSpheresLoc = new G_PIXI.Point(390, 55);
         this.sphereCount = 3;
+        this.curHealth = 3;
+    }
+
+    update() {
+        // Hack: Inefficient but works for now
+        let health = Math.max(0, this.board.entities.player.health);
+        health = Math.min(health, this.sphereCount);
+
+        if (health != this.curHealth) {
+            this.healthSpheres.forEach((v, idx) => {
+                v.container.renderable = (health - idx - 1 >= 0);
+            })
+        }
+        this.curHealth = health;
     }
 
     async load() {

@@ -61,13 +61,13 @@ class SandboxScene extends Scene {
             this.playscreen.ui.textbox.play();
         });
 
-        this.hud = new HUD(this.rootNode, this.eLoader);
-        this.hud.load();
-        this.hud.sphereContainer.zIndex = 4;
-
 
         this.board = new Board(this.eLoader, this.playscreen.playspace, LEVEL_ENCODING, this, NEXT_SCENES);
         this.board.load();
+
+        this.hud = new HUD(this.rootNode, this.eLoader, this.board);
+        this.hud.load();
+        this.hud.sphereContainer.zIndex = 4;
 
         this.bgmLoop = new this.howl({
             src: ["assets/audio/bgm/bgm_stage_intro.wav"],
@@ -88,6 +88,7 @@ class SandboxScene extends Scene {
 
     update(delta) {
         this.board.update(delta);
+        this.hud.update();
     }
 
     async teardown() {

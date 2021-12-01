@@ -59,7 +59,7 @@ class BoardTree {
     // Public functions
     // Should be called every render loop
     update(delta) {
-        if (this.stopUpdating) {
+        if (this.stopUpdating || this.playerEntity.dead) {
             return;
         }
 

@@ -30,7 +30,7 @@ class BossRoomScene extends Scene {
         this.playscreen = new Playscreen(this.rootNode, this.eLoader);
         this.playscreen.loadUI().then(()=>{
             this.playscreen.ui.textbox.sprite.onComplete = () => {
-                this.playscreen.ui.textbox.animateText("> Dev1ant autom4ta suppress0rs?! Oh nyo!", 0.01);
+                this.playscreen.ui.textbox.animateText("> Dev1ant autom4ta suppress0rs?!\nOh nyo!", 0.01);
             };
             this.playscreen.ui.textbox.play();
         });

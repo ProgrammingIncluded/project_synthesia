@@ -30,7 +30,7 @@ class EnemyBasic extends Entity  {
             this.position.x,
             this.position.y,
             this.maxSpeed,
-            this.container.rotation + Math.PI,
+            this.container.rotation + 2 * Math.PI * Math.random(),
             false
         );
         this.shootfx.play();
