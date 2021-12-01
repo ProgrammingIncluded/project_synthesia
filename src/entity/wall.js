@@ -1,5 +1,6 @@
 import { Entity } from "./entity.js";
 import { wallBlueprint } from "./blueprints.js";
+import { G_SELECT } from "../shared.js";
 import { G_LOGGER } from "../logger.js";
 
 class Wall extends Entity {
@@ -21,6 +22,13 @@ class Wall extends Entity {
 
     load(boardTree) {
         this.boardTree = boardTree;
+
+        // set some interactive properties
+        this.container.interactive = true;
+        this.container.buttonMode = true;
+        this.container.on("pointerdown", (event) => {
+            G_SELECT.select(this);
+        });
     }
 
     onHit(otherEntity) {

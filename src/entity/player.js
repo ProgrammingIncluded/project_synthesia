@@ -1,6 +1,7 @@
 import { Entity } from "./entity.js";
 import { playerBlueprint } from "./blueprints.js";
 import { G_PIXI, G_PIXI_APP, G_HOWL } from "../bootstrap.js";
+import { G_SELECT } from "../shared.js";
 import { G_LOGGER } from "../logger.js";
 import { Bullet } from "./bullet.js";
 
@@ -83,6 +84,13 @@ class Player extends Entity  {
         this.shootfx = new this.howl({
             src: ["assets/audio/effects/Moonshot.Sfx.Graze.wav"],
             loop: false
+        });
+
+        // set some interactive properties
+        this.container.interactive = true;
+        this.container.buttonMode = true;
+        this.container.on("pointerdown", (event) => {
+            G_SELECT.select(this);
         });
     }
 

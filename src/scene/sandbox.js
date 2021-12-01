@@ -1,9 +1,10 @@
 import Scene from "./scene.js";
 import { Playscreen } from "../logic/playscreen.js";
 import { Board } from "../logic/board.js";
-import { G_LOGGER, assert } from "../logger.js";
 import { G_EDITOR } from "../logic/editor.js";
 import { HUD } from "../logic/hud.js";
+
+import { G_LOGGER, assert } from "../logger.js";
 
 const LEVEL_ENCODING = [
     "******************************",

@@ -5,7 +5,6 @@
 import { G_PIXI } from "../bootstrap.js";
 import assert from "assert";
 import { G_LOGGER } from "../logger.js";
-import { runInNewContext } from "vm";
 
 // Renders playspace as chunks of chunksize for collision detection and placement of objects.
 // Basically groups chunksize into their own containers.

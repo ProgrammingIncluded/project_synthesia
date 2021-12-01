@@ -5,6 +5,7 @@ import * as escodegen from "escodegen";
 import { ENTITIES } from "../constants.js";
 import { G_LOGGER, assert } from "../logger.js";
 import { MUTATIONS } from "./code_mutations.js";
+import { G_EDITOR } from "../logic/editor.js";
 
 /**
  * Houses logic for loading entities into the file.
@@ -204,75 +205,79 @@ class EntityManager {
         return {"node": root, "accum": accum};
     }
 
-    mutate(entity) {
-        let pt = esprima.parseScript(entity.movement.toString());
-        G_LOGGER.log(pt);
-        assert(pt.type == "Program", "Loading invalid program");
-        assert(pt.body.length == 1, "Should only be passing in one function.");
+    mutate(entity, functionName) {
+        try {
+            let pt = esprima.parseScript(entity[functionName].toString());
+            assert(pt.type == "Program", "Loading invalid program");
+            assert(pt.body.length == 1, "Should only be passing in one function.");
 
-        // Convert any global functions to lambdas
-        // So eval will work properly
-        if (pt.body[0].type == "FunctionDeclaration") {
-            let fd = pt.body[0];
-            pt.body = [{
-                "type": "ArrowFunctionExpression",
-                "id": null,
-                "params": fd.params,
-                "body": fd.body,
-                "async": false,
-                "generator": false,
-                "expression": false
-            }];
-        }
+            // Convert any global functions to lambdas
+            // So eval will work properly
+            if (pt.body[0].type == "FunctionDeclaration") {
+                let fd = pt.body[0];
+                pt.body = [{
+                    "type": "ArrowFunctionExpression",
+                    "id": null,
+                    "params": fd.params,
+                    "body": fd.body,
+                    "async": false,
+                    "generator": false,
+                    "expression": false
+                }];
+            }
 
-        // TODO: Siphon mutations stage
+            // TODO: Siphon mutations stage
 
-        // Check if mutation is allowed, store a pointer to all available locations
-        let validLocations = {};
-        for (const m of MUTATIONS) {
-            validLocations[m.constructor.name] = [];
-        }
-        let mutation = undefined;
-        G_LOGGER.info("Still working");
-
-        this.iterateGraph(pt, entity.preStates, (idx, node, accum) => {
+            // Check if mutation is allowed, store a pointer to all available locations
+            let validLocations = {};
             for (const m of MUTATIONS) {
-                if (m.check(node, accum)) {
-                    mutation = m;
-                    validLocations[mutation.constructor.name].push(idx);
+                validLocations[m.constructor.name] = [];
+            }
+            let mutation = undefined;
+            G_LOGGER.info("Still working");
+
+            this.iterateGraph(pt, entity.preStates, (idx, node, accum) => {
+                for (const m of MUTATIONS) {
+                    if (m.check(node, accum)) {
+                        mutation = m;
+                        validLocations[mutation.constructor.name].push(idx);
+                        return {"node": node, "accum": accum};
+                    }
+                }
+                return {"node": node, "accum": accum};
+            });
+
+            if (mutation === undefined) {
+                assert(mutation === undefined, "Code cannot be mutated, too powerful.");
+            }
+
+            let mutated = false;
+            validLocations = validLocations[mutation.constructor.name];
+            let randomValidLocation = validLocations[Math.floor(Math.random() * validLocations.length)];
+            let mutationRet = this.iterateGraph(pt, entity.preStates, (idx, node, accum) => {
+                if (mutated || idx != randomValidLocation) {
                     return {"node": node, "accum": accum};
                 }
-            }
-            return {"node": node, "accum": accum};
-        });
+                let ret = mutation.mutate(node, accum);
+                mutated = true;
+                return {"node": ret.node, "accum": ret.state};
+            });
 
-        if (mutation === undefined) {
-            assert(mutation === undefined, "Code cannot be mutated, too powerful.");
+            let newCode = escodegen.generate(mutationRet.node);
+            G_LOGGER.info(newCode);
+
+
+            // HACK to provide a context for the function
+            let context = function() {
+                return eval(newCode);
+            }.bind(entity);
+
+            // Required to bind context
+            entity[functionName] = context();
         }
-
-        let mutated = false;
-        validLocations = validLocations[mutation.constructor.name];
-        let randomValidLocation = validLocations[Math.floor(Math.random() * validLocations.length)];
-        let mutationRet = this.iterateGraph(pt, entity.preStates, (idx, node, accum) => {
-            if (mutated || idx != randomValidLocation) {
-                return {"node": node, "accum": accum};
-            }
-            let ret = mutation.mutate(node, accum);
-            mutated = true;
-            return {"node": ret.node, "accum": ret.state};
-        });
-
-        let newCode = escodegen.generate(mutationRet.node);
-        G_LOGGER.info(newCode);
-
-
-        // HACK to provide a context for the function
-        let context = function() {
-            return eval(newCode);
-        }.bind(entity);
-
-        // Required to bind context
-        entity.movement = context();
+        catch(e) {
+            G_EDITOR.displaySafe(`// Compilation failed, consider trying again? ${e}`);
+        }
 
         // TODO: Verification
     }
