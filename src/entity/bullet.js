@@ -11,11 +11,14 @@ class Bullet extends Entity {
         this.collideLayer = 2;
         this.dead = false;
         this.isBullet = true;
+        this.bounces = true;
+        this.bounceCount = 1;
 
         // set during load
         this.boardTree = undefined;
         this.maxSpeed = undefined;
         this.friendly = undefined;
+        this.prevPosition = undefined;
     }
 
     // by default, bullets just move in a straight line at a fixed speed.
@@ -44,12 +47,20 @@ class Bullet extends Entity {
     onHit(otherEntity) {
         // Due to how teardown works, hit requires dead flag which then cleans up the sprite
         // and calls teardown for you.
-        this.dead = true;
+        if (otherEntity.immovable && this.bounces) {
+            this.container.rotation = this.container.rotation * Math.PI;
+            this.bounceCount -= 1;
+            this.bounces = (this.bounceCount) > 0;
+        }
+        else {
+            this.dead = true;
+        }
     }
 
     // Engine level API
     update(delta) {
         this.elapsed += delta;
+        this.prev
         let bpos = this.movement(delta, this.container.position, undefined, undefined, undefined);
         if(bpos.x < 0 || bpos.x > this.boardTree.sizeX || bpos.y < 0 || bpos.y > this.boardTree.sizeY) {
             this.teardown();

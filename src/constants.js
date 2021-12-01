@@ -6,7 +6,9 @@ const BUILD_ASSET_FOLDER = "assets"
 const SCENES = {
     "title": require("./scene/title.js"),
     "sandbox": require("./scene/sandbox.js"),
-    "bossroom": require("./scene/bossroom.js")
+    "level_two": require("./scene/level_two.js"),
+    "bossroom": require("./scene/bossroom.js"),
+    "end": require("./scene/end.js")
 }
 
 const ENTITIES = {

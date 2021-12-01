@@ -10,15 +10,23 @@ const LEVEL_ENCODING = [
     "******************************",
     "*             w              *",
     "*     e    e    e    e       *",
-    "*            p               *",
+    "*                            *",
     "*          e     e           *",
     "*     e            e         *",
     "*                            *",
-    "*                            *",
+    "*************************   **",
+    "*************************   **",
+    "************************* * **",
+    "***************              *",
+    "*             *      e       *",
+    "*         e   *              *",
+    "*     *       *     e        *",
+    "*  p  *       *              *",
+    "*     *       *              *",
     "******************************",
 ];
 
-const NEXT_SCENES = ["sandbox"];
+const NEXT_SCENES = ["end"];
 
 class BossRoomScene extends Scene {
     async load() {
@@ -28,14 +36,14 @@ class BossRoomScene extends Scene {
 
         this.rootNode.sortableChildren = true;
         this.playscreen = new Playscreen(this.rootNode, this.eLoader);
-        this.playscreen.loadUI().then(()=>{
-            this.playscreen.ui.textbox.sprite.onComplete = () => {
-                this.playscreen.ui.textbox.animateText("> Dev1ant autom4ta suppress0rs?!\nOh nyo!", 0.01);
-            };
-            this.playscreen.ui.textbox.play();
-        });
+        await this.playscreen.loadUI();
+        this.playscreen.ui.textbox.sprite.onComplete = () => {
+            this.playscreen.ui.textbox.animateText("> Time to put together everything \n you've learned!", 0.01);
+        };
+        this.playscreen.ui.textbox.play();
 
-        this.board = new Board(this.eLoader, this.playscreen.playspace, LEVEL_ENCODING, this, NEXT_SCENES);
+
+        this.board = new Board(this.eLoader, this.playscreen, LEVEL_ENCODING, this, NEXT_SCENES);
         this.board.load();
 
         this.hud = new HUD(this.rootNode, this.eLoader, this.board);

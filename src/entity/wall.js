@@ -17,10 +17,22 @@ class Wall extends Entity {
     }
 
     movement(elapsed, pos, player, enemies, space) {
-        return pos;
+        // Movement example:
+        // pos.x += 1; // < horizontal movement
+        // pos.y += 1; // < vertical movement
+        // Don't go too fast or the game will catch you!
+        // - S
+        //
+        pos.x = pos.x + 0; //< Why is this here?!? - S
+        pos.y = pos.y + 0;
+        return new this.helpers.Pixi.Point(pos.x, pos.y);
     }
 
     render(elapsed, sprite) {
+        // Color example:
+        // sprite.tint = 0xFFFFFF // < Hex encoding of color. White is no effect.
+        // - S
+        //
         return sprite;
     }
 

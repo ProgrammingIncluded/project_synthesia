@@ -72,6 +72,83 @@ class BasicConstOpMutation extends Mutation {
     }
 }
 
+class BasicColorMutation extends Mutation {
+    constructor() {
+        super();
+        this.allowed = [
+            "ArrowFunctionExpression"
+        ];
+    }
+
+    check(node, state) {
+        if (this.allowed.includes(node.type)) {
+            let found = false;
+            node.params.forEach((o) => {
+                if (o.name == "sprite") {
+                    found = true;
+                    return ;
+                }
+            });
+
+            return found;
+        }
+
+        return false;
+    }
+
+    mutate(node, state) {
+        if(node.type == "ArrowFunctionExpression") {
+            let newNode = {
+                "type": "ExpressionStatement",
+                "expression": {
+                    "type": "AssignmentExpression",
+                    "operator": "=",
+                    "left": {
+                    "type": "MemberExpression",
+                    "computed": false,
+                    "object": {
+                        "type": "Identifier",
+                        "name": "sprite"
+                    },
+                    "property": {
+                        "type": "Identifier",
+                        "name": "tint"
+                    }
+                    },
+                    "right": {
+                        "type": "BinaryExpression",
+                        "operator": "*",
+                        "left": {
+                            "type": "Literal",
+                            "value": 16777215,
+                            "raw": "0xFFFFFF"
+                        },
+                        "right": {
+                            "type": "CallExpression",
+                            "callee": {
+                            "type": "MemberExpression",
+                            "computed": false,
+                            "object": {
+                                "type": "Identifier",
+                                "name": "Math"
+                            },
+                            "property": {
+                                "type": "Identifier",
+                                "name": "random"
+                            }
+                            },
+                            "arguments": []
+                        }
+                    }
+                }
+            };
+            node.body = [newNode].concat(node.body);
+            return {"node": node, "state": state};
+        }
+        return {"node": node, "state": state};
+    }
+}
+
 class BasicCyclicMutation extends Mutation {
     constructor() {
         super();
@@ -90,7 +167,7 @@ class BasicCyclicMutation extends Mutation {
 }
 
 const MUTATIONS = [
-    new BasicConstOpMutation()
+    new BasicConstOpMutation(),
 ];
 
 export {

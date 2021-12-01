@@ -12,7 +12,7 @@ import Game from "./src/game.js";
 let game;
 bootstrap().then(()=>{
     game = new Game();
-    game.loadScene.bind(game, "title")();
+    game.loadScene.bind(game, "end")();
     return game
 }).then((game) => {
     game.start();

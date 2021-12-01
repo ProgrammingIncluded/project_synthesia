@@ -47,11 +47,13 @@ class Game {
 
         // gamespeed
         this.gamespeed = 1;
+        this.loading = false;
     }
 
     //! Start the game
     async start() {
         this.app.ticker.add((delta) => {
+            if (this.loading) {return;}
             this.currentScene.update(delta * this.gamespeed);
         });
     }
@@ -75,11 +77,12 @@ class Game {
             this.howler,
             this
         );
+        this.loading = true;
         this.currentScene = scene;
 
         // Hook slowdown code
         G_EDITOR.onFocus(() => {
-            this.gamespeed = 0.2;
+            this.gamespeed = 0.02;
         });
 
         G_EDITOR.onBlur(()=>{
@@ -87,7 +90,8 @@ class Game {
         })
 
         // Load scene, may time some time
-        return await scene.load();
+        await scene.load();
+        this.loading = false;
     }
 }
 

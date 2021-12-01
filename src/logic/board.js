@@ -247,12 +247,11 @@ class BoardTree {
 }
 
 class Board {
-    constructor(eLoader, playarea, levelEncoding, currentScene, nextScenes, levelSize=1024*8, chunkSize=1024) {
-        console.log("board: ");
-        console.log(currentScene);
+    constructor(eLoader, playscreen, levelEncoding, currentScene, nextScenes, levelSize=1024*8, chunkSize=1024) {
+        this.ui = playscreen.ui;
         this.eLoader = eLoader;
         this.playAreaDim = {height: 540, width: Math.floor(540 * (16.0 / 9))};
-        this.playContainer = playarea;
+        this.playContainer = playscreen.playspace;
         this.playContainer.height = this.playAreaDim.height;
         this.playContainer.width = this.playAreaDim.width;
 
@@ -289,7 +288,7 @@ class Board {
                     continue;
                 }
                 // set up which scenes can be loaded from here
-                else if(value === "winzone"){
+                else if(value == "winzone"){
                     let scene = "";
                     try{
                         scene = this.nextScenes.shift();
