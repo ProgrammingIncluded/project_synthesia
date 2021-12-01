@@ -10,6 +10,7 @@ class Bullet extends Entity {
         this.collidable = true;
         this.collideLayer = 2;
         this.dead = false;
+        this.isBullet = true;
 
         // set during load
         this.boardTree = undefined;

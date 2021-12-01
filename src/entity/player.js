@@ -62,6 +62,9 @@ class Player extends Entity  {
         if (otherEntity.immovable) {
             this.position = this.prevPosition;
         }
+        else if (otherEntity.isBullet) {
+            this.damage();
+        }
     }
 
     render(elapsed, sprite) {
@@ -69,6 +72,8 @@ class Player extends Entity  {
     }
 
     damage() {
+        this.sprite.tint = 0xD91B43;
+        setTimeout(()=> {this.sprite.tint=0xFFFFFF;}, 100);
     }
 
     // Engine level API
