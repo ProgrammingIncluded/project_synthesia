@@ -109,7 +109,7 @@ let bulletBlueprint = blueFactory([
                                   CollidableBlueprint
                                 ]);
 
-let wallBlueprint = blueFactory([CollidableBlueprint, RenderBlueprint]);
+let wallBlueprint = blueFactory([MovementBlueprint, CollidableBlueprint, RenderBlueprint]);
 
 export {
     enemyBlueprint,

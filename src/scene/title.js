@@ -1,6 +1,6 @@
 import Scene from "./scene.js";
 import { PixelateFilter } from "@pixi/filter-pixelate";
-import { EDITOR } from "../bootstrap.js";
+import { EDITOR, G_PIXI } from "../bootstrap.js";
 import { G_LOGGER, assert } from "../logger.js";
 
 
@@ -60,18 +60,32 @@ class TitleScene extends Scene {
 
                 setTimeout(increaseFilters, filterSpeed);
             });
+
+            this.background.buttons.start.tint = 0x9B9A9A;
             this.freezeButtons = true;
             this.buttonClickFX.play();
         });
 
         this.background.buttons.extra.on("pointerdown", (event) => {
             if (this.freezeButtons) { return; }
+            // this.background.buttons.extra.tint = 0x9B9A9A;
             this.buttonClickFX.play();
         });
 
         this.background.buttons.credits.on("pointerdown", (event) => {
             if (this.freezeButtons) { return; }
+            this.background.buttons.credits.tint = 0x9B9A9A;
+            let credits = G_PIXI.Sprite.from("assets/credits.png");
+            credits.interactive = true;
+            credits.buttonMode = true;
+            credits.on("pointerdown", () => {
+                this.background.buttons.credits.tint = 0xFFFFFF;
+                this.freezeButtons = false;
+                credits.destroy();
+            });
+
             this.buttonClickFX.play();
+            this.rootNode.addChild(credits);
         });
 
         return this;

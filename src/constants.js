@@ -20,6 +20,10 @@ const ENTITIES = {
     "line_two": require("./entity/ui/line_two.js"),
     "hacksphere": require("./entity/ui/hacksphere.js"),
     "title": require("./entity/ui/title.js"),
+    "hack_button": require("./entity/ui/hack.js"),
+    "mutate_button": require("./entity/ui/bug.js"),
+    "movement_button": require("./entity/ui/movement.js"),
+    "render_button": require("./entity/ui/render.js"),
     "wall": require("./entity/wall.js")
 }
 
