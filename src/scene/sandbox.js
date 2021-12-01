@@ -9,8 +9,8 @@ import { G_LOGGER, assert } from "../logger.js";
 const LEVEL_ENCODING = [
     "******************************",
     "*                            *",
-    "*     e            e         *",
-    "*            p               *",
+    "*     e     w      e         *",
+    "*        w   p  w            *",
     "*                            *",
     "*     e            e         *",
     "*                            *",
@@ -91,8 +91,10 @@ class SandboxScene extends Scene {
     }
 
     async teardown() {
+        this.bgmLoop.stop();
         this.bgmLoop.unload();
         if (this.bgmIntro.playing()) {
+            this.bgmIntro.stop();
             this.bgmIntro.unload();
         }
         await this.board.teardown();
