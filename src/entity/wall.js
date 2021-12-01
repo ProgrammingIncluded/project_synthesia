@@ -1,13 +1,12 @@
 import { Entity } from "./entity.js";
 import { wallBlueprint } from "./blueprints.js";
-import { G_PIXI } from "../bootstrap.js";
 import { G_LOGGER } from "../logger.js";
 
 class Wall extends Entity {
 
     constructor() {
         super(wallBlueprint);
-        this.spriteName = "sample.jpg";
+        this.spriteName = "wall.png";
         this.collidable = true;
         this.collideLayer = 3;
         this.immovable = true;

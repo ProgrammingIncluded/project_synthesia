@@ -8,7 +8,7 @@ class HUD {
         this.sphereContainer = new G_PIXI.Container();
         this.healthSpheres = [];
         this.hackSpheres = []
-        this.hackSpheresLoc = new G_PIXI.Point(560, 28);
+        this.hackSpheresLoc = new G_PIXI.Point(562, 30);
         this.healthSpheresLoc = new G_PIXI.Point(390, 55);
         this.sphereCount = 3;
     }

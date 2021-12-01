@@ -40,19 +40,19 @@ class Player extends Entity  {
         this.elapsed = 0; // reset counter if we fired
     }
 
-    movement(elapsed, curPos, player, enemies, space) {
+    movement(delta, curPos, player, enemies, space) {
         let newX = Math.max(
             this.sprite.width/2,
             Math.min(
                 this.board.playAreaDim.width - this.sprite.width / 2,
-                curPos.x + this.maxSpeed * this.dirX
+                curPos.x + this.maxSpeed * delta * this.dirX
             )
         );
         let newY = Math.max(
             this.sprite.height/2,
             Math.min(
                 this.board.playAreaDim.height - this.sprite.height / 2,
-                curPos.y + this.maxSpeed * this.dirY
+                curPos.y + this.maxSpeed * delta * this.dirY
             )
         );
         return new this.helpers.Pixi.Point(newX, newY);
@@ -85,7 +85,7 @@ class Player extends Entity  {
         // Elapsed serves as our counter to limit bullet firing frequency
         this.elapsed += delta;
         // NESW movement
-        let posBuf = this.movement(undefined, this.container.position, undefined, undefined, undefined);
+        let posBuf = this.movement(delta, this.container.position, undefined, undefined, undefined);
         this.prevPosition = new G_PIXI.Point(this.container.position.x, this.container.position.y);
         this.container.position = posBuf;
         // Rotate towards mouse location

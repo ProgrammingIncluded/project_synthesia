@@ -40,7 +40,9 @@ class Bullet extends Entity {
     }
 
     onHit(otherEntity) {
-        // TODO
+        // Due to how teardown works, hit requires dead flag which then cleans up the sprite
+        // and calls teardown for you.
+        this.dead = true;
     }
 
     // Engine level API

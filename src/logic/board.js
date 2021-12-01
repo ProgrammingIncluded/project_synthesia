@@ -5,6 +5,7 @@
 import { G_PIXI } from "../bootstrap.js";
 import assert from "assert";
 import { G_LOGGER } from "../logger.js";
+import { runInNewContext } from "vm";
 
 // Renders playspace as chunks of chunksize for collision detection and placement of objects.
 // Basically groups chunksize into their own containers.
@@ -126,8 +127,18 @@ class BoardTree {
                                     .reduce((acc, curVal) => acc.concat(curVal[1]), []);
 
             layerChildren.forEach((container, idx) => {
-                allOtherChildren.forEach((otherContainer, idx) => {
+                for (let otherIdx = 0; otherIdx < allOtherChildren.length; ++otherIdx) {
                     // TODO: can be faster with cache
+                    let otherContainer = allOtherChildren[otherIdx];
+
+                    // Work around to allow for teardown() during hit due to array modification and getBounds.
+                    if (container.entity.dead) {
+                        break;
+                    }
+                    if (otherContainer.entity.dead) {
+                        continue;
+                    }
+
                     const bounds1 = container.entity.container.getBounds();
                     const bounds2 = otherContainer.entity.container.getBounds();
                     let onHit = (bounds1.x < bounds2.x + bounds2.width
@@ -138,8 +149,16 @@ class BoardTree {
                     if (onHit) {
                         container.entity.onHit(otherContainer.entity);
                         otherContainer.entity.onHit(container.entity);
+
+                        if(container.entity.dead) {
+                            container.entity.teardown();
+                        }
+
+                        if(otherContainer.entity.dead) {
+                            otherContainer.entity.teardown();
+                        }
                     }
-                });
+                }
             });
         });
 
@@ -196,13 +215,13 @@ class BoardTree {
         assert(y < this.sizeY, "Entity placed farther than gamespace");
 
         let container = this.getContainer(x, y);
-        return this.eLoader.load(entityName, container, new G_PIXI.Point(x, y), this, ...varArgs);
+        return this.eLoader.load(entityName, container, new G_PIXI.Point(x % this.chunkSize, y % this.chunkSize), this, ...varArgs);
     }
 }
 
 class Board {
     // TODO: Level encoding
-    constructor(eLoader, playarea, levelEncoding) {
+    constructor(eLoader, playarea, levelEncoding, levelSize=1024*8, chunkSize=1024) {
         this.eLoader = eLoader;
         this.playAreaDim = {height: 540, width: Math.floor(540 * (16.0 / 9))};
         this.playContainer = playarea;
@@ -210,11 +229,61 @@ class Board {
         this.playContainer.width = this.playAreaDim.width;
 
         this.boardTree = null;
+        this.levelSize = levelSize;
+        this.chunkSize = chunkSize;
 
         this.entities = {
             player: null,
             playerBullets: []
         }
+
+        this.levelEncoding = levelEncoding;
+    }
+
+    getEncodingMap() {
+        return {
+            "*": "wall",
+            "e": "enemy_basic",
+            "p": "player"
+        }
+    }
+
+    async processLevelEncoding(boardTree, levelEncoding, spacing=32) {
+        let encoding = this.getEncodingMap();
+        let value = undefined;
+        levelEncoding.forEach((row, y) => {
+            for (let x = 0; x < row.length; ++x) {
+                value = encoding[row[x]];
+                if(value == undefined) {
+                    continue;
+                }
+                boardTree.addEntity(value, x * spacing, y * spacing);
+            }
+        });
+    }
+
+    async createPlayer(levelEncoding, spacing=32) {
+       // First find where the player is located
+        let px = -1;
+        let py = -1;
+        let srow;
+        for (let y = 0; y < levelEncoding.length; ++y) {
+            let row = levelEncoding[y];
+            px = row.indexOf("p");
+            if(px  >= 0) {
+                srow = row;
+                py = y;
+                break;
+            }
+        }
+
+        let playerEntity = await this.eLoader.load("player", this.playContainer, new G_PIXI.Point(px * spacing, py * spacing), this);
+        this.entities.player = playerEntity;
+        // Duplicate array via ES6 method
+        let result = [...levelEncoding];
+        result[py] = srow.substring(0, px) + " " + srow.substring(px + 1);
+        return result;
+
     }
 
     // Fires a bullet that is immune to chunk culling
@@ -233,34 +302,14 @@ class Board {
     }
 
     async load() {
+        // Player must exist before world is created because trees need observers
+        let noPlayerEncoding = await this.createPlayer(this.levelEncoding);
+
         // TODO: Fill in procedural game logic generation
-        // TODO:
-        // 1. Add player sprite
         // 2. Add alternate sprites (e.g. taking damage)
-        let playerEntity = await this.eLoader.load("player", this.playContainer, new G_PIXI.Point(0, 200), this);
-        this.entities.player = playerEntity;
+        this.boardTree = new BoardTree(this.entities.player, this.playContainer, this.eLoader, this.levelSize, this.levelSize, this.chunkSize);
 
-        let boardSize = 1024 * 2;
-        let chunkSize = 512;
-        this.boardTree = new BoardTree(playerEntity, this.playContainer, this.eLoader, boardSize, boardSize, chunkSize);
-        for (let i = 0; i < 1; ++i) {
-            this.boardTree.addEntity("enemy_basic",
-                Math.floor(Math.random()),
-                Math.floor(Math.random()))
-        }
-
-        this.boardTree.addEntity("wall", 100, 100);
-
-        // Set a period of resetting the enemy
-        // setInterval(() => {
-            // if (this.entities.enemies.length == 1) {
-                // this.entities.enemies[0].teardown();
-            // }
-            // this.entities.enemies = [];
-            // this.eLoader.load("enemy_basic", this.playContainer, new G_PIXI.Point(0, 90)).then((v) => {
-                // this.entities.enemies.push(v);
-            // })
-        // }, 3000);
+        this.processLevelEncoding(this.boardTree, noPlayerEncoding);
     }
 
     update(delta) {
