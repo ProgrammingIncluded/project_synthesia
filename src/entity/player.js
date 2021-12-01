@@ -12,7 +12,8 @@ class Player extends Entity  {
         this.elapsed = 0;
         this.spriteName = "temp_player.png";
         this.maxSpeed = 5;
-        this.health = 5;
+        this.health = 3;
+        this.alive = true;
         this.shootFreq = 5;
         this.vx = 0, this.vy = 0;
         this.dirX = 0, this.dirY = 0;
@@ -73,8 +74,16 @@ class Player extends Entity  {
     }
 
     damage() {
-        this.sprite.tint = 0xD91B43;
-        setTimeout(()=> {this.sprite.tint=0xFFFFFF;}, 100);
+        if (!this.alive) {
+            return;
+        }
+        this.health--;
+        this.ouchfx.play();
+        this.alive = this.health > 0;
+        // on death, play big, dramatic sound. PICHUUUNNNN~
+        if (!this.alive) {
+            this.deathrattle.play();
+        }
     }
 
     // Engine level API
@@ -85,12 +94,13 @@ class Player extends Entity  {
             src: ["assets/audio/effects/Moonshot.Sfx.Graze.wav"],
             loop: false
         });
-
-        // set some interactive properties
-        this.container.interactive = true;
-        this.container.buttonMode = true;
-        this.container.on("pointerdown", (event) => {
-            G_SELECT.select(this);
+        this.ouchfx = new this.howl({
+            src: ["assets/audio/effects/Moonshot.Sfx.Hit.Player.wav"],
+            loop: false
+        });
+        this.deathrattle = new this.howl({
+            src: ["assets/audio/effects/Moonshot.Sfx.Explosion.Player.Death.wav"],
+            loop: false
         });
     }
 

@@ -2,6 +2,8 @@ import { Entity } from "./entity.js";
 import { enemyBlueprint } from "./blueprints.js";
 import { G_SELECT } from "../shared.js";
 import { G_LOGGER } from "../logger.js";
+import { G_EDITOR } from "../logic/editor.js";
+import { G_HOWL } from "../bootstrap.js"
 
 class EnemyBasic extends Entity  {
     constructor() {
@@ -15,7 +17,8 @@ class EnemyBasic extends Entity  {
         this.collidable = true;
         this.collideLayer = 2;
         this.prevPosition = null;
-
+        this.health = 2;
+        this.alive = true;
         this.elapsed = 0;
         // set during load
         this.boardTree = undefined;
@@ -56,10 +59,17 @@ class EnemyBasic extends Entity  {
     }
 
     damage() {
+        if (!alive) {
+            return;
+        }
+        this.ouchfx.play();
+        this.health-=1;
+        alive = this.health > 0;
     }
 
     // Engine level API
     load(boardTree) {
+        this.howl = G_HOWL;
         this.boardTree = boardTree;
         // set some interactive properties
         this.container.interactive = true;
@@ -67,6 +77,16 @@ class EnemyBasic extends Entity  {
 
         this.container.on("pointerdown", (event) => {
             G_SELECT.select(this);
+        });
+
+        this.shootfx = new this.howl({
+            src: ["assets/audio/effects/Moonshot.Sfx.Graze.wav"],
+            loop: false
+        });
+
+        this.ouchfx = new this.howl({
+            src: ["assets/audio/effects/Moonshot.Sfx.Hit.Enemy.SoftImpact"],
+            loop: false
         });
     }
 

@@ -58,6 +58,11 @@ class BoardTree {
     // Public functions
     // Should be called every render loop
     update(delta) {
+        if(!this.playerEntity.alive) {
+            // clean up the game
+            this.playerEntity.teardown();
+
+        }
         this.playerEntity.update(delta);
         let containers = this.getActiveContainers(this.playerEntity.position.x, this.playerEntity.position.y);
 
