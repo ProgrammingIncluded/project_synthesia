@@ -1,6 +1,7 @@
 import { Entity } from "./entity.js";
 import { playerBlueprint } from "./blueprints.js";
 import { G_PIXI, G_PIXI_APP, G_HOWL } from "../bootstrap.js";
+import { G_SELECT } from "../shared.js";
 import { G_LOGGER } from "../logger.js";
 import { Bullet } from "./bullet.js";
 
@@ -18,6 +19,7 @@ class Player extends Entity  {
         this.keysPressed = {"left": false, "right": false, "up": false, "down": false, "space": false};
         this.collidable = true;
         this.collideLayer = 1;
+        this.prevPosition = null;
 
         window.addEventListener('keydown', this.onKeyPress.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));
@@ -39,26 +41,31 @@ class Player extends Entity  {
         this.elapsed = 0; // reset counter if we fired
     }
 
-    movement(elapsed, curPos, player, enemies, space) {
+    movement(delta, curPos, player, enemies, space) {
         let newX = Math.max(
             this.sprite.width/2,
             Math.min(
                 this.board.playAreaDim.width - this.sprite.width / 2,
-                curPos.x + this.maxSpeed * this.dirX
+                curPos.x + this.maxSpeed * delta * this.dirX
             )
         );
         let newY = Math.max(
             this.sprite.height/2,
             Math.min(
                 this.board.playAreaDim.height - this.sprite.height / 2,
-                curPos.y + this.maxSpeed * this.dirY
+                curPos.y + this.maxSpeed * delta * this.dirY
             )
         );
         return new this.helpers.Pixi.Point(newX, newY);
     }
 
     onHit(otherEntity) {
-        this.damage();
+        if (otherEntity.immovable) {
+            this.position = this.prevPosition;
+        }
+        else if (otherEntity.isBullet) {
+            this.damage();
+        }
     }
 
     render(elapsed, sprite) {
@@ -66,6 +73,8 @@ class Player extends Entity  {
     }
 
     damage() {
+        this.sprite.tint = 0xD91B43;
+        setTimeout(()=> {this.sprite.tint=0xFFFFFF;}, 100);
     }
 
     // Engine level API
@@ -76,13 +85,21 @@ class Player extends Entity  {
             src: ["assets/audio/effects/Moonshot.Sfx.Graze.wav"],
             loop: false
         });
+
+        // set some interactive properties
+        this.container.interactive = true;
+        this.container.buttonMode = true;
+        this.container.on("pointerdown", (event) => {
+            G_SELECT.select(this);
+        });
     }
 
     update(delta) {
         // Elapsed serves as our counter to limit bullet firing frequency
         this.elapsed += delta;
         // NESW movement
-        let posBuf = this.movement(undefined, this.container.position, undefined, undefined, undefined);
+        let posBuf = this.movement(delta, this.container.position, undefined, undefined, undefined);
+        this.prevPosition = new G_PIXI.Point(this.container.position.x, this.container.position.y);
         this.container.position = posBuf;
         // Rotate towards mouse location
         // Convert mouse target point to game field coordinate system

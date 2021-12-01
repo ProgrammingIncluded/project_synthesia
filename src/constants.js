@@ -19,7 +19,8 @@ const ENTITIES = {
     "line_one": require("./entity/ui/line_one.js"),
     "line_two": require("./entity/ui/line_two.js"),
     "hacksphere": require("./entity/ui/hacksphere.js"),
-    "title": require("./entity/ui/title.js")
+    "title": require("./entity/ui/title.js"),
+    "wall": require("./entity/wall.js")
 }
 
 // Setup play field constant scaling

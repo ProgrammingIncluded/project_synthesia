@@ -16,6 +16,7 @@
     "grunt-contrib-uglify-es": "github:gruntjs/grunt-contrib-uglify#harmony",
     "howler": "^2.2.3",
     "jquery": "^3.6.0",
+    "perlin-noise": "^0.0.1",
     "pino": "^7.1.0",
     "pixi.js": "^6.2.0"
   },

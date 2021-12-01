@@ -1,6 +1,5 @@
 import { Entity } from "./entity.js";
 import { bulletBlueprint } from "./blueprints.js";
-import { BITMAP_FONTS, G_PIXI_APP } from "../bootstrap.js";
 import { G_LOGGER } from "../logger.js";
 
 class Bullet extends Entity {
@@ -11,6 +10,7 @@ class Bullet extends Entity {
         this.collidable = true;
         this.collideLayer = 2;
         this.dead = false;
+        this.isBullet = true;
 
         // set during load
         this.boardTree = undefined;
@@ -41,7 +41,9 @@ class Bullet extends Entity {
     }
 
     onHit(otherEntity) {
-        // TODO
+        // Due to how teardown works, hit requires dead flag which then cleans up the sprite
+        // and calls teardown for you.
+        this.dead = true;
     }
 
     // Engine level API

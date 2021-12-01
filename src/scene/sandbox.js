@@ -1,9 +1,48 @@
 import Scene from "./scene.js";
 import { Playscreen } from "../logic/playscreen.js";
 import { Board } from "../logic/board.js";
-import { G_LOGGER, assert } from "../logger.js";
 import { G_EDITOR } from "../logic/editor.js";
 import { HUD } from "../logic/hud.js";
+
+import { G_LOGGER, assert } from "../logger.js";
+
+const LEVEL_ENCODING = [
+    "******************************",
+    "*                            *",
+    "*     e            e         *",
+    "*           p                *",
+    "*                            *",
+    "*     e            e         *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "*                            *",
+    "******************************",
+];
 
 class SandboxScene extends Scene {
     async load() {
@@ -24,7 +63,8 @@ class SandboxScene extends Scene {
         this.hud.load();
         this.hud.sphereContainer.zIndex = 4;
 
-        this.board = new Board(this.eLoader, this.playscreen.playspace, "");
+
+        this.board = new Board(this.eLoader, this.playscreen.playspace, LEVEL_ENCODING);
         this.board.load();
 
         this.bgmLoop = new this.howl({

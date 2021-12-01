@@ -1,7 +1,7 @@
 import { Entity } from "./entity.js";
 import { enemyBlueprint } from "./blueprints.js";
+import { G_SELECT } from "../shared.js";
 import { G_LOGGER } from "../logger.js";
-import { G_EDITOR } from "../logic/editor.js";
 
 class EnemyBasic extends Entity  {
     constructor() {
@@ -14,6 +14,7 @@ class EnemyBasic extends Entity  {
         this.lastAttacked = 0;
         this.collidable = true;
         this.collideLayer = 2;
+        this.prevPosition = null;
 
         this.elapsed = 0;
         // set during load
@@ -65,14 +66,14 @@ class EnemyBasic extends Entity  {
         this.container.buttonMode = true;
 
         this.container.on("pointerdown", (event) => {
-            this.eLoader.mutate(this);
-            G_EDITOR.displaySafe(this.movement.toString());
+            G_SELECT.select(this);
         });
     }
 
     update(delta) {
         this.elapsed += delta;
         let posBuf = this.movement(this.elapsed, this.position, undefined, undefined, undefined);
+        this.prevPosition = this.position;
         this.position = posBuf;
         this.attack(this.elapsed, this.position, undefined, undefined, undefined);
     }
