@@ -23,6 +23,7 @@ const ENTITIES = {
     "title": require("./entity/ui/title.js"),
     "winzone": require("./entity/winzone.js"),
     "hack_button": require("./entity/ui/hack.js"),
+    "mutate_button": require("./entity/ui/bug.js"),
     "movement_button": require("./entity/ui/movement.js"),
     "render_button": require("./entity/ui/render.js"),
     "wall": require("./entity/wall.js")

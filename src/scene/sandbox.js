@@ -9,8 +9,8 @@ import { G_LOGGER, assert } from "../logger.js";
 const LEVEL_ENCODING = [
     "******************************",
     "*                            *",
-    "*     e     w      e         *",
-    "*        w   p  w            *",
+    "*     e            e         *",
+    "*            p               *",
     "*                            *",
     "*     e            e         *",
     "*                            *",
