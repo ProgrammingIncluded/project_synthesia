@@ -10,6 +10,10 @@ class Editor {
         this.locked = false;
     }
 
+    getValue() {
+        return EDITOR.getValue();
+    }
+
     // Display a random emote on the editor
     randomEmote(emotion) {
         let emotes = Object.values(EMOJI[emotion]);

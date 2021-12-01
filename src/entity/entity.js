@@ -234,7 +234,6 @@ class EntityManager {
                 validLocations[m.constructor.name] = [];
             }
             let mutation = undefined;
-            G_LOGGER.info("Still working");
 
             this.iterateGraph(pt, entity.preStates, (idx, node, accum) => {
                 for (const m of MUTATIONS) {
@@ -262,10 +261,7 @@ class EntityManager {
                 mutated = true;
                 return {"node": ret.node, "accum": ret.state};
             });
-
             let newCode = escodegen.generate(mutationRet.node);
-            G_LOGGER.info(newCode);
-
 
             // HACK to provide a context for the function
             let context = function() {
@@ -280,6 +276,59 @@ class EntityManager {
         }
 
         // TODO: Verification
+    }
+
+    inject(entity, functionName, code) {
+        try {
+            let pt = esprima.parseScript(code);
+            assert(pt.type == "Program", "Loading invalid program");
+            assert(pt.body.length == 1, "Should only be passing in one function.");
+
+            // Convert any global functions to lambdas
+            // So eval will work properly
+            if (pt.body[0].type == "FunctionDeclaration") {
+                let fd = pt.body[0];
+                pt.body = [{
+                    "type": "ArrowFunctionExpression",
+                    "id": null,
+                    "params": fd.params,
+                    "body": fd.body,
+                    "async": false,
+                    "generator": false,
+                    "expression": false
+                }];
+            }
+
+            let newCode = escodegen.generate(pt);
+
+            // HACK to provide a context for the function
+            let context = function() {
+                return eval(newCode);
+            }.bind(entity);
+
+            // Basic validation test
+            if ("movement" == functionName) {
+                let resultOne = context()(0.2, new G_PIXI.Point(2, 2), {}, {}, {});
+                let result = context()(0.2, resultOne, {}, {}, {});
+                assert(result !== undefined, "Return cannot be undefined");
+                assert(result !== null, "Return cannot be null");
+                assert((resultOne.x - result.x)**2 < 100, "Slow down there cowboy. You move too fast.");
+                assert((resultOne.y - result.y)**2 < 100, "Slow down there cowboy. You move too fast.");
+            }
+            else {
+                let result = context()(0.1, new G_PIXI.Sprite.from("assets/sample.png"));
+                assert(result !== undefined, "Return cannot be undefined");
+                assert(result !== null, "Return cannot be null");
+                assert("tint" in result, "Return must be sprite type");
+            }
+
+            // Required to bind context
+            entity[functionName] = context();
+        }
+        catch(e) {
+            G_EDITOR.displaySafe(`// Looks like there was an error. Try again? \n ${e}`);
+        }
+
     }
 
     async load(entityName, node, startingPosition=new G_PIXI.Point(0, 0), ...varArgs) {

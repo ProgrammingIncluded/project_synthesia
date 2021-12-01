@@ -21,8 +21,16 @@ const ENTITIES = {
     "line_two": require("./entity/ui/line_two.js"),
     "hacksphere": require("./entity/ui/hacksphere.js"),
     "title": require("./entity/ui/title.js"),
+<<<<<<< HEAD
     "wall": require("./entity/wall.js"),
     "winzone": require("./entity/winzone.js")
+=======
+    "hack_button": require("./entity/ui/hack.js"),
+    "mutate_button": require("./entity/ui/bug.js"),
+    "movement_button": require("./entity/ui/movement.js"),
+    "render_button": require("./entity/ui/render.js"),
+    "wall": require("./entity/wall.js")
+>>>>>>> 8c595decad48e08bbf84fe8696b10745e510bd91
 }
 
 // Setup play field constant scaling
