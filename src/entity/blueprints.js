@@ -111,9 +111,12 @@ let bulletBlueprint = blueFactory([
 
 let wallBlueprint = blueFactory([CollidableBlueprint, RenderBlueprint]);
 
+let winBlueprint = blueFactory([CollidableBlueprint, RenderBlueprint]);
+
 export {
     enemyBlueprint,
     playerBlueprint,
     bulletBlueprint,
-    wallBlueprint
+    wallBlueprint,
+    winBlueprint
 }

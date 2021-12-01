@@ -223,8 +223,9 @@ class BoardTree {
 }
 
 class Board {
-    // TODO: Level encoding
-    constructor(eLoader, playarea, levelEncoding, levelSize=1024*8, chunkSize=1024) {
+    constructor(eLoader, playarea, levelEncoding, currentScene, nextScenes, levelSize=1024*8, chunkSize=1024) {
+        console.log("board: ");
+        console.log(currentScene);
         this.eLoader = eLoader;
         this.playAreaDim = {height: 540, width: Math.floor(540 * (16.0 / 9))};
         this.playContainer = playarea;
@@ -241,13 +242,16 @@ class Board {
         }
 
         this.levelEncoding = levelEncoding;
+        this.currentScene = currentScene;
+        this.nextScenes = nextScenes;
     }
 
     getEncodingMap() {
         return {
             "*": "wall",
             "e": "enemy_basic",
-            "p": "player"
+            "p": "player",
+            "w": "winzone"
         }
     }
 
@@ -260,7 +264,20 @@ class Board {
                 if(value == undefined) {
                     continue;
                 }
-                boardTree.addEntity(value, x * spacing, y * spacing);
+                // set up which scenes can be loaded from here
+                else if(value === "winzone"){
+                    let scene = "";
+                    try{
+                        scene = this.nextScenes.shift();
+                    }
+                    catch{
+                        scene = "";
+                    }
+                    boardTree.addEntity(value, x * spacing, y * spacing, this.currentScene, scene);
+                }
+                else {
+                    boardTree.addEntity(value, x * spacing, y * spacing);
+                }
             }
         });
     }

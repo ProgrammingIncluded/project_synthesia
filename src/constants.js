@@ -5,7 +5,8 @@ const BUILD_ASSET_FOLDER = "assets"
 // Otherwise require streaming and other abstracted fs.
 const SCENES = {
     "title": require("./scene/title.js"),
-    "sandbox": require("./scene/sandbox.js")
+    "sandbox": require("./scene/sandbox.js"),
+    "bossroom": require("./scene/bossroom.js")
 }
 
 const ENTITIES = {
@@ -20,7 +21,8 @@ const ENTITIES = {
     "line_two": require("./entity/ui/line_two.js"),
     "hacksphere": require("./entity/ui/hacksphere.js"),
     "title": require("./entity/ui/title.js"),
-    "wall": require("./entity/wall.js")
+    "wall": require("./entity/wall.js"),
+    "winzone": require("./entity/winzone.js")
 }
 
 // Setup play field constant scaling

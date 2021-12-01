@@ -1,6 +1,6 @@
 # Project Synthesia
 
-Submission for Game Jame 2021. More info to come.
+Submission for Game Off 2021. More info to come.
 
 ## Build Instructions
 

@@ -320,7 +320,7 @@ class EntityManager {
             }
 
             entity.eLoader = this;
-            entity.load();
+            entity.load(...varArgs);
             entity.position = startingPosition;
             entity.parent = node;
             node.addChild(entity.container);
