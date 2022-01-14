@@ -22,6 +22,7 @@ class Player extends Entity  {
         this.collideLayer = 1;
         this.prevPosition = null;
         this.isPlayer = true; // hack for winzone detection
+        this.cooldown;
 
         window.addEventListener('keydown', this.onKeyPress.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));
@@ -82,17 +83,21 @@ class Player extends Entity  {
     }
 
     damage() {
-        if (this.dead) {
+        if (this.dead || this.cooldown) {
             return;
         }
+
+        this.cooldown = true;
         this.health--;
         this.ouchfx.play();
-        G_LOGGER.log(this.health);
         this.dead = this.health <= 0;
         // on death, play big, dramatic sound. PICHUUUNNNN~
         if (this.dead) {
             this.deathrattle.play();
         }
+
+        let timeout = () => {this.cooldown = false;}
+        setTimeout(timeout.bind(this), 1000);
     }
 
     // Engine level API

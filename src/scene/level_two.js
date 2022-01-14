@@ -8,23 +8,23 @@ import { G_LOGGER, assert } from "../logger.js";
 
 const LEVEL_ENCODING = [
     "******************************",
-    "*             *              *",
+    "*             *      e       *",
     "*   p         *              *",
+    "*             *      e       *",
+    "*             *          w   *",
     "*             *              *",
-    "*             *    w         *",
-    "*             *              *",
-    "*             *              *",
-    "*             *              *",
-    "*             *              *",
+    "*             *      e       *",
     "*             *              *",
     "*             *              *",
+    "*             *      e       *",
     "*             *              *",
     "*             *              *",
+    "*             *      e       *",
     "*             *              *",
     "******************************",
 ];
 
-const NEXT_SCENES = ["level_two", "level_two"];
+const NEXT_SCENES = ["bossroom"];
 
 class SandboxScene extends Scene {
     async load() {
@@ -36,7 +36,7 @@ class SandboxScene extends Scene {
         this.playscreen = new Playscreen(this.rootNode, this.eLoader);
         await this.playscreen.loadUI();
         this.playscreen.ui.textbox.sprite.onComplete = () => {
-            this.playscreen.ui.textbox.animateText("> Why, hel0w0l there! H0w are you?\n Use HACK to get escape.", 0.01);
+            this.playscreen.ui.textbox.animateText("> Dev1ant autom4ta suppress0rs?!\nOh nyo!", 0.01);
         };
         this.playscreen.ui.textbox.play();
 
@@ -85,3 +85,4 @@ class SandboxScene extends Scene {
 }
 
 module.exports = SandboxScene;
+

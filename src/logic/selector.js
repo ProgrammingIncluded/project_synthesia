@@ -1,3 +1,4 @@
+import { G_HOWL } from "../bootstrap.js";
 import { G_EDITOR } from "../logic/editor.js";
 
 // Selects enemy
@@ -7,12 +8,25 @@ class Selector {
         this.selectedEntity = undefined;
         this.selectedFunction = "movement";
         this.selectButton = undefined;
+
+        this.hackFx = new G_HOWL({
+            src: ["assets/audio/effects/Moonshot.Sfx.SlipTime.Exit.wav"],
+            loop: false,
+        });
+        this.hacks = 3;
     }
 
 
     injectCode(code) {
-        if (this.selectedEntity === undefined) { return; }
+        if (this.hacks <= 0 || this.selectedEntity === undefined) { return; }
         this.selectedEntity.eLoader.inject(this.selectedEntity, this.selectedFunction, code);
+        this.hackFx.play();
+        this.hacks -= 1;
+
+        // recharge
+        let charge = () => {this.hacks += 1;}
+        setTimeout(charge, 3000);
+
         this.selectFunction(this.selectedFunction, this.selectButton);
     }
 

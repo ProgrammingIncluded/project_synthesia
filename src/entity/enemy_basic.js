@@ -3,7 +3,7 @@ import { enemyBlueprint } from "./blueprints.js";
 import { G_SELECT } from "../shared.js";
 import { G_LOGGER } from "../logger.js";
 import { G_EDITOR } from "../logic/editor.js";
-import { G_HOWL } from "../bootstrap.js"
+import { G_HOWL, G_PIXI } from "../bootstrap.js"
 
 class EnemyBasic extends Entity  {
     constructor() {
@@ -22,6 +22,8 @@ class EnemyBasic extends Entity  {
         this.elapsed = 0;
         // set during load
         this.boardTree = undefined;
+
+        this.prevPosition = null;
     }
 
     fireBullet() {
@@ -30,7 +32,7 @@ class EnemyBasic extends Entity  {
             this.position.x,
             this.position.y,
             this.maxSpeed,
-            this.container.rotation + Math.PI,
+            this.container.rotation + 2 * Math.PI * Math.random(),
             false
         );
         this.shootfx.play();
@@ -47,7 +49,7 @@ class EnemyBasic extends Entity  {
     }
 
     movement(elapsed, pos, player, enemies, space) {
-        let resultX = 100.0 + Math.cos(elapsed/50.0) * 100.0;
+        let resultX = pos.x + Math.cos(elapsed/50.0);
         // this.enforce((resultX - curPosX) <= this.preStates.movement.maxVelocity);
         return new this.helpers.Pixi.Point(resultX, pos.y + 0);
     }
@@ -59,6 +61,9 @@ class EnemyBasic extends Entity  {
     onHit(otherEntity) {
         if(otherEntity.isBullet) {
             this.damage();
+        }
+        else if(otherEntity.immovable) {
+            this.position = this.prevPosition;
         }
     }
 
@@ -98,7 +103,7 @@ class EnemyBasic extends Entity  {
     update(delta) {
         this.elapsed += delta;
         let posBuf = this.movement(this.elapsed, this.position, undefined, undefined, undefined);
-        this.prevPosition = this.position;
+        this.prevPosition = new G_PIXI.Point(this.container.position.x, this.container.position.y);
         this.position = posBuf;
         this.attack(this.elapsed, this.position, undefined, undefined, undefined);
     }

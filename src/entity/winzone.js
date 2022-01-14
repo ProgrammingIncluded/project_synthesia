@@ -9,9 +9,7 @@ class WinZone extends Entity {
 
     constructor() {
         super(winBlueprint);
-        this.spriteName = "animation/hacksphere.json"
-        this.animationProp.loop = false;
-        this.animationProp.animationSpeed = 0.5;
+        this.spriteName = "temp_player.png";
 
         this.collidable = true;
         this.collideLayer = 3;
@@ -25,9 +23,9 @@ class WinZone extends Entity {
     }
 
     load(boardTree, currentScene, nextScene) {
-        this.curAnimation = "normal";
         this.currentScene = currentScene;
         this.nextScene = nextScene;
+        this.sprite.tint = 0xFF00FF;
     }
 
     // change scene if player touches this
